@@ -14,6 +14,9 @@ import SummaryModalContent from '../../components/modal/SummaryModalContent';
 import { ReenrollSummaryState } from '../../schemas/summarySchema';
 
 const TransferExecute =() => {
+
+    const [pagination, setPagination] = useState({ page: 1, pageSize: 10, totalPages: 0 })
+
     const { sectionName } = useGetSectionTypeLabel();
     const dataStoreData = useDataStoreKey({ sectionType: sectionName });
     const programsValues = useProgramsKeys();
@@ -70,47 +73,82 @@ const TransferExecute =() => {
     }, [academicYear, grade, section])
 
     return (
-        <div style={{ height: "85vh" }}>
-            {
-                !(Boolean(schoolName) && Boolean(school)) ?
-                    <InfoPage
-                        title="SEMIS-Staff-Reenrollment"
-                        sections={[
-                            {
-                                sectionTitle: "Follow the instructions to proceed:",
-                                instructions: [
-                                    "Select the Organization unit you want to view data",
-                                    "Use global filters(Class, Grade and Academic Year)"
-                                ]
-                            }
-                        ]}
-                    />
-                    :
-                    <>
-                        <Table
-                            programConfig={programData}
-                            title="Transfers"
-                            viewPortWidth={viewPortWidth}
-                            columns={columns}
-                            totalElements={4}
-                            tableData={tableData}
-                            selectable={true}
-                            selected={selected}
-                            setSelected={setSelected}
-                            rowAction={rowsActions}
-                            defaultFilterNumber={3}
-                            filterState={{ attributes: [], dataElements: [] }}
-                            loading={loading}
-                            rightElements={<EnrollmentActionsButtons filetrState={filterState} selectedDataStoreKey={dataStoreData} programData={programData as unknown as ProgramConfig} />}
-                            setFilterState={setFilterState}
-                        />
-                        {openEditModal && <ModalManager open={openEditModal} setOpen={setOpenEditModal} saveMode="UPDATE" />}
-                        {(openSummary.created != null && openSummary.conflicts != null) && <SummaryModalContent conflictDetails={openSummary.conflictDetails} handleCloseModal={() => SetOpenSummary({ created: null, conflicts: null, conflictDetails: null })} created={openSummary.created} conflicts={openSummary.conflicts} open={openSummary.created != null && openSummary.conflicts != null} />}
-                        {openDeleteModal && <ModalManagerEnrollmentDelete open={openDeleteModal} setOpen={setOpenDeleteModal} saveMode="UPDATE" />}
-                    </>
-            }
-        </div>
-    )
+      <div style={{ height: "85vh" }}>
+        {!(Boolean(schoolName) && Boolean(school)) ? (
+          <InfoPage
+            title="SEMIS-Staff-Reenrollment"
+            sections={[
+              {
+                sectionTitle: "Follow the instructions to proceed:",
+                instructions: [
+                  "Select the Organization unit you want to view data",
+                  "Use global filters(Class, Grade and Academic Year)",
+                ],
+              },
+            ]}
+          />
+        ) : (
+          <>
+            <Table
+              programConfig={programData}
+              title="Transfers"
+              viewPortWidth={viewPortWidth}
+              columns={columns}
+              totalElements={4}
+              tableData={tableData.data}
+              selectable={true}
+              selected={selected}
+              setSelected={setSelected}
+              rowAction={rowsActions}
+              defaultFilterNumber={3}
+              filterState={{ attributes: [], dataElements: [] }}
+              loading={loading}
+              rightElements={
+                <EnrollmentActionsButtons
+                  filetrState={filterState}
+                  selectedDataStoreKey={dataStoreData}
+                  programData={programData as unknown as ProgramConfig}
+                />
+              }
+              setFilterState={setFilterState}
+              pagination={pagination}
+              setPagination={setPagination}
+            />
+            {openEditModal && (
+              <ModalManager
+                open={openEditModal}
+                setOpen={setOpenEditModal}
+                saveMode="UPDATE"
+              />
+            )}
+            {openSummary.created != null && openSummary.conflicts != null && (
+              <SummaryModalContent
+                conflictDetails={openSummary.conflictDetails}
+                handleCloseModal={() =>
+                  SetOpenSummary({
+                    created: null,
+                    conflicts: null,
+                    conflictDetails: null,
+                  })
+                }
+                created={openSummary.created}
+                conflicts={openSummary.conflicts}
+                open={
+                  openSummary.created != null && openSummary.conflicts != null
+                }
+              />
+            )}
+            {openDeleteModal && (
+              <ModalManagerEnrollmentDelete
+                open={openDeleteModal}
+                setOpen={setOpenDeleteModal}
+                saveMode="UPDATE"
+              />
+            )}
+          </>
+        )}
+      </div>
+    );
 }
 
 export default TransferExecute

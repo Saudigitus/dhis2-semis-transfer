@@ -20,6 +20,12 @@ import SummaryModalContent from "../../components/modal/SummaryModalContent";
 import { ReenrollSummaryState } from "../../schemas/summarySchema";
 
 const TransferExecute = () => {
+  const [pagination, setPagination] = useState({
+    page: 1,
+    pageSize: 10,
+    totalPages: 0,
+  });
+
   const { sectionName } = useGetSectionTypeLabel();
   const dataStoreData = useDataStoreKey({ sectionType: sectionName });
   const programsValues = useProgramsKeys();
@@ -122,7 +128,7 @@ const TransferExecute = () => {
     <div style={{ height: "85vh" }}>
       {!(Boolean(schoolName) && Boolean(school)) ? (
         <InfoPage
-          title="SEMIS-Student-Transfer"
+          title="SEMIS-Transfer-Execute"
           sections={[
             {
               sectionTitle: "Follow the instructions to proceed:",
@@ -141,7 +147,7 @@ const TransferExecute = () => {
             viewPortWidth={viewPortWidth}
             columns={columns}
             totalElements={4}
-            tableData={tableData}
+            tableData={tableData.data}
             selectable={true}
             selected={selected}
             setSelected={setSelected}
@@ -157,6 +163,8 @@ const TransferExecute = () => {
               />
             }
             setFilterState={setFilterState}
+            pagination={pagination}
+            setPagination={setPagination}
           />
           {openEditModal && (
             <ModalManager

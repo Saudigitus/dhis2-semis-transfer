@@ -10,8 +10,8 @@ msgstr ""
 
 msgctxt "Application title"
 msgid "__MANIFEST_APP_TITLE"
-msgstr "SEMIS-Tranfer-Execute"
+msgstr "SEMIS-Tranfer"
 
 msgctxt "Application description"
 msgid "__MANIFEST_APP_DESCRIPTION"
-msgstr "SEMIS-Tranfer-Execute"
+msgstr "SEMIS-Tranfer"

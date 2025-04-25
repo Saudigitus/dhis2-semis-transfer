@@ -8,10 +8,15 @@ import {
 import { LayoutProps } from "../../types/layout/LayoutProps";
 import { Outlet } from "react-router-dom";
 import { useGetSectionTypeLabel } from "dhis2-semis-functions";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function FullLayout() {
   const { sectionName } = useGetSectionTypeLabel();
   const dataStoreData = useDataStoreKey({ sectionType: sectionName });
+
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isLandingPage = location.pathname === "/";
 
   const programsValues = useProgramsKeys();
   const programData = programsValues[0];
@@ -33,10 +38,34 @@ export default function FullLayout() {
       dataElement.dataElement.id === dataStoreData.registration.section
   )?.dataElement.optionSet.options;
 
+  const headerItems = isLandingPage
+    ? {
+        orgunits: {
+          options: [],
+          onSelect: (orgUnitId) => {
+            navigate("/transfer/orgunit");
+          },
+        },
+      }
+    : {
+        academicYears: {
+          options: academicYear,
+        },
+        classes: {
+          options: section,
+        },
+        grades: {
+          options: grade,
+        },
+        orgunits: {
+          options: [],
+        },
+      };
+
   return (
     <div className={style.LayoutContainer}>
       <div className={style.FullLayoutContainer}>
-        <SemisHeader
+        {/* <SemisHeader
           headerItems={{
             academicYears: {
               options: academicYear,
@@ -51,7 +80,9 @@ export default function FullLayout() {
               options: [],
             },
           }}
-        />
+        /> */}
+        <SemisHeader headerItems={headerItems} />
+
         <main className={style.MainContentContainer}>
           <Outlet />
         </main>

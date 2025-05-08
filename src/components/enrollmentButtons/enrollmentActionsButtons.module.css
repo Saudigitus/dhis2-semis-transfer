@@ -1,9 +1,12 @@
 .container {
-    width: auto !important;
+    width: auto !;
     overflow: auto !important;
     display: flex;
 }
 
+.btn{
+    margin: 10px 5px 0 20px;
+}
 @media screen and (max-width: 885px) and (min-width: 715px) {
     .work_buttons button {
         font-size: 12px !important;

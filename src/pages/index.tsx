@@ -1,3 +1,3 @@
-import TransferExecute from "./trasferExecute/TransferExecute";
+import TransferExecute from "./transfer/Transfer";
 
 export {TransferExecute}

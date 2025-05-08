@@ -6,38 +6,50 @@ import { useDataStoreKey } from "dhis2-semis-components";
 import { Table, useProgramsKeys } from "dhis2-semis-components";
 import EnrollmentActionsButtons from "../../components/enrollmentButtons/EnrollmentActionsButtons";
 import { useGetSectionTypeLabel, useHeader, useTableData, useUrlParams, useViewPortWidth } from "dhis2-semis-functions";
-import { RowSelectionState } from "../../schemas/selectedStaffsSchema";
 import InfoPageComp from "../info/info";
+import OuNameContainer from "../../utils/common/getOrgUnit";
+import ApproveTranfer from "../../components/modal/modalTransfer";
 
 const TransferExecute = () => {
-  const [pagination, setPagination] = useState({ page: 1, pageSize: 10, totalPages: 0, });
-  const [tab, setSelectedTab] = useState("outgoing");
+  const [pagination, setPagination] = useState({ page: 2, pageSize: 10, totalPages: 0, });
+  const [tab, setSelectedTab] = useState<string>("incoming");
   const { sectionName } = useGetSectionTypeLabel();
   const dataStoreData = useDataStoreKey({ sectionType: sectionName });
   const programsValues = useProgramsKeys();
   const programData = programsValues[0];
-  const [selected, setSelected] = useRecoilState(RowSelectionState);
   const { viewPortWidth } = useViewPortWidth();
-  const { urlParameters } = useUrlParams();
+  const { urlParameters, add } = useUrlParams();
   const { school, schoolName, } = urlParameters();
   const { getData, tableData, loading } = useTableData({ module: Modules.Transfer });
   const { columns } = useHeader({ dataStoreData, programConfigData: programData as unknown as ProgramConfig, tableColumns: [], programStage: dataStoreData.transfer.programStage });
   const [filterState, setFilterState] = useState<{ dataElements: any; attributes: any; }>({ attributes: [], dataElements: [] });
   const [refetch] = useRecoilState(TableDataRefetch);
+  const [data, setData] = useState<any>([]);
+  const [modalDetails, setModalDetails] = useState<any>({});
+  const { getOuDisplayName, loaading: loadingOU } = OuNameContainer({ dataStoreData, setData, setModalDetails });
+  const incomingInitialFilter = [`${dataStoreData?.transfer?.destinySchool as unknown as string}:in:${school}`];
 
   useEffect(() => {
     if (school) {
       void getData({
-        page: 1,
-        pageSize: 10,
+        ...pagination,
         program: programData.id as string,
-        orgUnit: school,
+        orgUnit: tab === "outgoing" ? school : undefined as unknown as string,
         baseProgramStage: dataStoreData?.registration?.programStage as string,
         attributeFilters: filterState.attributes,
-        otherProgramStage: dataStoreData.transfer.programStage
-      });
+        otherProgramStage: dataStoreData.transfer.programStage,
+        dataElementFilters: tab === "incoming" ? incomingInitialFilter : filterState.dataElements,
+      })
     }
-  }, [filterState, refetch, school]);
+  }, [filterState, refetch, school, tab, pagination]);
+
+  useEffect(() => {
+    add('position', tab)
+  }, [tab])
+
+  useEffect(() => {
+    void getOuDisplayName(tableData.data)
+  }, [tableData.data])
 
   return (
     <div style={{ height: "85vh" }}>
@@ -50,13 +62,10 @@ const TransferExecute = () => {
             title="Transfers"
             viewPortWidth={viewPortWidth}
             columns={columns}
-            tableData={tableData.data}
-            selectable={true}
-            selected={selected}
-            setSelected={setSelected}
+            tableData={data}
             defaultFilterNumber={3}
             filterState={filterState}
-            loading={loading}
+            loading={loading || loadingOU}
             rightElements={
               <EnrollmentActionsButtons
                 selectedValue={tab}
@@ -69,6 +78,7 @@ const TransferExecute = () => {
           />
         </>
       )}
+      {modalDetails?.open && <ApproveTranfer modalDetails={modalDetails} setModalDetails={setModalDetails} />}
     </div>
   );
 };

@@ -13,4 +13,18 @@ interface ModalManagerInterface {
     setOpen: (arg: boolean) => void;
 }
 
-export type { ModalContentInterface, ModalManagerInterface }
+interface ApproveTranferProps {
+    setModalDetails: (value: any) => void
+    modalDetails: any
+}
+
+
+interface ModalProps {
+    open: boolean
+    title: string
+    children: React.ReactNode
+    setOpen: (value: boolean) => void
+}
+
+
+export type { ModalContentInterface, ModalManagerInterface, ApproveTranferProps, ModalProps }

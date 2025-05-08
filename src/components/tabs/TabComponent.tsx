@@ -5,8 +5,8 @@ import { WithPadding } from "dhis2-semis-components";
 import styles from './TabComponent.module.css'
 
 const tabsElements = [
-  { name: "Outgoing transfer", value: "outgoing" },
-  { name: "Incoming transfer", value: "incoming" }
+  { name: "Incoming transfer", value: "incoming" },
+  { name: "Outgoing transfer", value: "outgoing" }
 ];
 
 function TabComponent(props: TabBarProps): React.ReactElement {
@@ -17,9 +17,9 @@ function TabComponent(props: TabBarProps): React.ReactElement {
       {tabsElements.map((element, i) => (
         <Tab
           key={i}
-          selected={selectedValue.value === element.value}
+          selected={selectedValue === element.value}
           onClick={() => {
-            setSelectedValue(element);
+            setSelectedValue(element.value);
           }}
         >
           <WithPadding p="7px">{element.name} </WithPadding>

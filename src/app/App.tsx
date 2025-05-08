@@ -1,5 +1,5 @@
 import React from 'react'
-import './App.module.css'
+import './app.css'
 import { AppWrapper } from 'dhis2-semis-components'
 import { Router } from '../components/routes'
 

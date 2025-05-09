@@ -11,7 +11,7 @@ import OuNameContainer from "../../utils/common/getOrgUnit";
 import ApproveTranfer from "../../components/modal/modalTransfer";
 
 const TransferExecute = () => {
-  const [pagination, setPagination] = useState({ page: 2, pageSize: 10, totalPages: 0, });
+  const [pagination, setPagination] = useState({ page: 1, pageSize: 10, totalPages: 0, });
   const [tab, setSelectedTab] = useState<string>("incoming");
   const { sectionName } = useGetSectionTypeLabel();
   const dataStoreData = useDataStoreKey({ sectionType: sectionName });
@@ -19,7 +19,7 @@ const TransferExecute = () => {
   const programData = programsValues[0];
   const { viewPortWidth } = useViewPortWidth();
   const { urlParameters, add } = useUrlParams();
-  const { school, schoolName, } = urlParameters();
+  const { school, schoolName, position } = urlParameters();
   const { getData, tableData, loading } = useTableData({ module: Modules.Transfer });
   const { columns } = useHeader({ dataStoreData, programConfigData: programData as unknown as ProgramConfig, tableColumns: [], programStage: dataStoreData.transfer.programStage });
   const [filterState, setFilterState] = useState<{ dataElements: any; attributes: any; }>({ attributes: [], dataElements: [] });
@@ -34,14 +34,14 @@ const TransferExecute = () => {
       void getData({
         ...pagination,
         program: programData.id as string,
-        orgUnit: tab === "outgoing" ? school : undefined as unknown as string,
+        orgUnit: position === "outgoing" ? school : undefined as unknown as string,
         baseProgramStage: dataStoreData?.registration?.programStage as string,
         attributeFilters: filterState.attributes,
         otherProgramStage: dataStoreData.transfer.programStage,
-        dataElementFilters: tab === "incoming" ? incomingInitialFilter : filterState.dataElements,
+        dataElementFilters: position === "incoming" ? incomingInitialFilter : filterState.dataElements,
       })
     }
-  }, [filterState, refetch, school, tab, pagination]);
+  }, [filterState, refetch, school, tab, pagination, position]);
 
   useEffect(() => {
     add('position', tab)
@@ -51,6 +51,7 @@ const TransferExecute = () => {
     void getOuDisplayName(tableData.data)
   }, [tableData.data])
 
+  console.log(columns)
   return (
     <div style={{ height: "85vh" }}>
       {!(Boolean(schoolName) && Boolean(school)) ? (
@@ -61,7 +62,7 @@ const TransferExecute = () => {
             programConfig={programData}
             title="Transfers"
             viewPortWidth={viewPortWidth}
-            columns={columns}
+            columns={[...(columns || []), { ...columns?.[0], displayName: "Resquest time", id: "requestTime" }]}
             tableData={data}
             defaultFilterNumber={3}
             filterState={filterState}

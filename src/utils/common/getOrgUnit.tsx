@@ -3,6 +3,8 @@ import { useGetOusData } from '../../hooks/orgUnits/useGetOrgUnits';
 import { DataStoreProps } from 'dhis2-semis-types';
 import { useUrlParams } from 'dhis2-semis-functions';
 import { useGetComponent } from './getComponent';
+import { getFormattedTimeDifference } from './getDiff';
+import { useTransferConst } from '../../hooks/transferOptions/statusOptions';
 
 function OuNameContainer({ dataStoreData, setData, setModalDetails }: { setModalDetails: any, setData: (args: any) => any, dataStoreData: DataStoreProps[0] }) {
     const { getOuName } = useGetOusData()
@@ -10,6 +12,7 @@ function OuNameContainer({ dataStoreData, setData, setModalDetails }: { setModal
     const { urlParameters } = useUrlParams()
     const { position } = urlParameters()
     const { getComponent } = useGetComponent({ setModalDetails, dataStore: dataStoreData })
+    const { transferConst } = useTransferConst({ dataStore: dataStoreData })
 
     async function getOuDisplayName(tableData: any[]) {
         let idHolder: any = {}
@@ -36,9 +39,14 @@ function OuNameContainer({ dataStoreData, setData, setModalDetails }: { setModal
                 })
             }
 
+            if (data[dataStoreData.transfer.status] === transferConst({ status: "pending" }))
+                data['requestTime'] = getFormattedTimeDifference(data.registrationEventOccurredAt)
+            else data['requestTime'] = '--'
+
             data[dataStoreData.transfer.status] = getComponent(data[dataStoreData.transfer.status], data, position == 'incoming', false)
         }
 
+        console.log(tableData)
         setData(tableData)
         setLoading(false)
     }

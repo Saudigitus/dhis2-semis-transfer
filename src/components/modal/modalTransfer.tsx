@@ -13,22 +13,21 @@ function ApproveTranfer(props: ApproveTranferProps): React.ReactElement {
     const programsValues = useProgramsKeys();
     const trackedEntityAttributes = programsValues?.[0]?.trackedEntityType?.trackedEntityTypeAttributes
     const programTrackedEntityAttributes = programsValues?.[0]?.programTrackedEntityAttributes
-    const { loading, transferTEI, rejectTEI, loadingEvents } = useTransferTEI({ handleCloseApproval: () => setModalDetails({ open: false }) });
+    const { loading, transferTEI, rejectTEI, loadingEvents } = useTransferTEI({ selectedTei: modalDetails.row, handleCloseApproval: () => setModalDetails({ open: false }) });
 
     const actions = [
-        { id: "cancel", name: "Cancel", disabled: false, onClick: () => { } },
+        { id: "cancel", name: "Cancel", disabled: false, onClick: () => setModalDetails({ open: false }) },
         {
-            id: "saveandnew", name: "Confirm", primary: true, disabled: !!(loadingEvents || loading), onClick: () => {
+            id: "confirm", name: "Confirm", primary: true, loading: !!(loadingEvents || loading), disabled: !!(loadingEvents || loading), onClick: () => {
                 if (modalDetails?.approved) {
-                    transferTEI(school, modalDetails?.row)
+                    transferTEI(school)
                 } else {
-                    rejectTEI(modalDetails?.row)
+                    rejectTEI()
                 }
             }
         },
     ];
 
-    console.log(modalDetails.row)
     return (
         <ModalComponent
             children={

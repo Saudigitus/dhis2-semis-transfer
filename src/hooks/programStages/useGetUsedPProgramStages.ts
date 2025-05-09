@@ -4,9 +4,9 @@ import { useDataStoreKey } from "dhis2-semis-components";
 const useGetUsedProgramStages = () => {
     const { sectionName } = useGetSectionTypeLabel()
     const dataStoreData = useDataStoreKey({ sectionType: sectionName });
-    const { performance, "final-result": finalResult, "socio-economics": socioEconomics, registration } = dataStoreData;
+    const { performance, "final-result": finalResult, "socio-economics": socioEconomics, registration, transfer } = dataStoreData;
     const performanceProgramStages = performance?.programStages.map((programStage: any) => programStage.programStage) ?? [];
 
-    return performance ? [...performanceProgramStages, finalResult?.programStage, socioEconomics?.programStage, registration?.programStage] : []
+    return performance ? [...performanceProgramStages, finalResult?.programStage, socioEconomics?.programStage, registration?.programStage, transfer.programStage] : []
 }
 export default useGetUsedProgramStages

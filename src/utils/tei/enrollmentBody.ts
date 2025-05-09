@@ -19,7 +19,7 @@ export function formatEnrollmentBody(program: any, events: any[], registrationEv
                     program: registrationEvent?.program,
                     status: "COMPLETED",
                     enrollment: registrationEvent?.enrollment,
-                    attributes: tei?.attributes,
+                    attributes: attributes,
                     createdAt: registrationEvent?.createdAt,
                     occurredAt: registrationEvent?.occurredAt,
                     enrolledAt: registrationEvent?.occurredAt,
@@ -30,7 +30,10 @@ export function formatEnrollmentBody(program: any, events: any[], registrationEv
                         })),
                         {
                             ...transferEvent,
-                            dataValues: [{ dataElement: status, value }]
+                            dataValues: [
+                                ...transferEvent?.dataValues?.filter((x: any) => x?.dataElement != status),
+                                { dataElement: status, value }
+                            ]
                         }
                     ]
                 }

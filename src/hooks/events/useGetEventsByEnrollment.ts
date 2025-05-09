@@ -1,24 +1,14 @@
-import { useState, useCallback } from "react";
-import { useGetEvent } from "./useGetEvent";
-import { useGetSectionTypeLabel } from "dhis2-semis-functions";
+import { useState } from "react";
+import { useGetEvents, useGetSectionTypeLabel } from "dhis2-semis-functions";
 import { useDataStoreKey } from "dhis2-semis-components";
 
-interface Event {
-    event: string;
-    enrollment: string;
-    trackedEntity: string;
-    [key: string]: any;
-}
-
 export function useGetEventsByEnrollment() {
-    const { getEvent } = useGetEvent();
+    const { getEvents } = useGetEvents()
     const { sectionName } = useGetSectionTypeLabel();
     const dataStoreData = useDataStoreKey({ sectionType: sectionName });
-
     const [loading, setLoading] = useState(false);
-    const [eventsForTransfer, setEventsForTransfer] = useState<Event[]>([]);
 
-    const getEventsByEnrollment = useCallback(async (
+    const getEventsByEnrollment = async (
         enrollment: string,
         trackedEntity: string,
         programStagesToTransfer: string[]
@@ -29,8 +19,9 @@ export function useGetEventsByEnrollment() {
 
         try {
             const eventPromises = programStagesToTransfer.map(stage =>
-                getEvent(dataStoreData.program, stage, [], trackedEntity, "*")
+                getEvents({ program: dataStoreData?.program, programStage: stage, trackedEntity, fields: "*" })
                     .then((response: any) => {
+                        console.log(stage, response, 'response')
                         const event = response?.results?.instances?.find(
                             (instance: any) => instance.enrollment === enrollment
                         );
@@ -39,18 +30,16 @@ export function useGetEventsByEnrollment() {
                     .catch(() => null)
             );
 
-            const events = (await Promise.all(eventPromises)).filter(Boolean);
-            setEventsForTransfer(events);
+            const events = await Promise.all(eventPromises)
+            return events
         } catch (error) {
-            console.error("Erro ao buscar eventos:", error);
-            setEventsForTransfer([]);
+
         } finally {
             setLoading(false);
         }
-    }, [getEvent, dataStoreData?.program]);
+    }
 
     return {
-        events: eventsForTransfer,
         getEventsByEnrollment,
         loading
     };

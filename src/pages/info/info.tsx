@@ -4,7 +4,7 @@ export default function InfoPageComp() {
 
     return (
         <InfoPage
-            title="SEMIS-Transfer-Execute"
+            title="SEMIS- Transfer"
             sections={[
                 {
                     sectionTitle: "Follow the instructions to proceed:",

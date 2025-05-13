@@ -41,7 +41,7 @@ const TransferExecute = () => {
         dataElementFilters: position === "incoming" ? incomingInitialFilter : filterState.dataElements,
       })
     }
-  }, [filterState, refetch, school, tab, pagination, position]);
+  }, [filterState, refetch, school, tab, pagination?.page, pagination?.pageSize, position]);
 
   useEffect(() => {
     add('position', tab)

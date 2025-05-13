@@ -5,7 +5,6 @@ import { FullLayout } from "../../layout";
 
 export default function Router() {
   return (
-    <HashRouter>
       <Routes>
         <Route path="/" element={<FullLayout />}>
           <Route
@@ -15,6 +14,5 @@ export default function Router() {
           />
         </Route>
       </Routes>
-    </HashRouter>
   );
 }

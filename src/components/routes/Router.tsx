@@ -1,7 +1,7 @@
 import React from "react";
 import { TransferExecute } from "../../pages";
 import { Routes, Route, HashRouter } from "react-router-dom";
-import WithHeaderBarLayout from "src/layout/WithHeaderBarLayout";
+import WithHeaderBarLayout from "../../layout/WithHeaderBarLayout";
 
 export default function Router() {
   return (

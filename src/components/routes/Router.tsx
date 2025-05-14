@@ -5,7 +5,6 @@ import WithHeaderBarLayout from "src/layout/WithHeaderBarLayout";
 
 export default function Router() {
   return (
-    <HashRouter>
       <Routes>
         <Route path="/" element={<WithHeaderBarLayout />}>
           <Route
@@ -13,6 +12,5 @@ export default function Router() {
           />
         </Route>
       </Routes>
-    </HashRouter>
   );
 }

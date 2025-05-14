@@ -31,10 +31,8 @@ const TransferExecute = () => {
   const incomingInitialFilter = [`${dataStoreData?.transfer?.destinySchool as unknown as string}:in:${school}`];
   const location = useLocation()
 
-  console.log(location.search?.slice(1),  "lana")
   useEffect(() => {
     if (school) {
-      console.log("hererere")
       void getData({
         ...pagination,
         program: programData.id as string,

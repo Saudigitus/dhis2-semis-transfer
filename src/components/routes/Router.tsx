@@ -1,18 +1,18 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
 import { TransferExecute } from "../../pages";
-import { FullLayout } from "../../layout";
+import { Routes, Route, HashRouter } from "react-router-dom";
+import WithHeaderBarLayout from "src/layout/WithHeaderBarLayout";
 
 export default function Router() {
   return (
+    <HashRouter>
       <Routes>
-        <Route path="/" element={<FullLayout />}>
+        <Route path="/" element={<WithHeaderBarLayout />}>
           <Route
-            key={"transfer-execute"}
-            path={"/"}
-            element={<TransferExecute />}
+            path={"/"} key={"transfer-execute"} element={<TransferExecute />}
           />
         </Route>
       </Routes>
+    </HashRouter>
   );
 }

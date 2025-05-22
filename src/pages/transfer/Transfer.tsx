@@ -11,7 +11,7 @@ import OuNameContainer from "../../utils/common/getOrgUnit";
 import ApproveTranfer from "../../components/modal/modalTransfer";
 
 const TransferExecute = () => {
-  const [pagination, setPagination] = useState({ page: 1, pageSize: 10, totalPages: 0, });
+  const [pagination, setPagination] = useState({ page: 1, pageSize: 10, totalPages: 0, totalElements: 0 });
   const [tab, setSelectedTab] = useState<string>("incoming");
   const { sectionName } = useGetSectionTypeLabel();
   const dataStoreData = useDataStoreKey({ sectionType: sectionName });
@@ -49,6 +49,7 @@ const TransferExecute = () => {
 
   useEffect(() => {
     void getOuDisplayName(tableData.data)
+    setPagination((prev) => ({ ...prev, totalPages: tableData.pagination.totalPages, totalElements: tableData.pagination.totalElements }))
   }, [tableData.data])
 
   console.log(columns)

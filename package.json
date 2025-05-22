@@ -1,6 +1,6 @@
 {
-  "name": "dhis2-semis-transfer-execute",
-  "version": "1.0.1-alpha.19",
+  "name": "dhis2-semis-transfer",
+  "version": "1.0.0-alpha.4",
   "description": "",
   "license": "BSD-3-Clause",
   "private": false,

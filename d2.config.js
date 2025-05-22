@@ -1,7 +1,7 @@
 const config = {
     type: 'app',
-    name: 'SEMIS-Tranfer-Execute',
-    description: "SEMIS-Tranfer-Execute",
+    name: 'SEMIS- Transfer',
+    description: "SEMIS- Transfer",
     entryPoints: {
         app: './src/app/App.tsx',
     },

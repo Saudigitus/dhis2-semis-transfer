@@ -1,15 +1,12 @@
-import React from 'react'
 import './app.css'
-import { AppWrapper } from 'dhis2-semis-components'
+import React from 'react'
 import { Router } from '../components/routes'
 
-const MyApp = () => {
+const Transfer = () => {
 
     return (
-        <AppWrapper dataStoreKey='dataStore/semis/values'>
-            <Router/>
-        </AppWrapper>
+        <Router />
     )
 }
 
-export default MyApp
+export default Transfer

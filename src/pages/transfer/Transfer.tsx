@@ -9,6 +9,7 @@ import { useGetSectionTypeLabel, useHeader, useTableData, useUrlParams, useViewP
 import InfoPageComp from "../info/info";
 import OuNameContainer from "../../utils/common/getOrgUnit";
 import ApproveTranfer from "../../components/modal/modalTransfer";
+import { useLocation } from "react-router-dom";
 
 const TransferExecute = () => {
   const [pagination, setPagination] = useState({ page: 1, pageSize: 10, totalPages: 0, totalElements: 0 });
@@ -19,7 +20,7 @@ const TransferExecute = () => {
   const programData = programsValues[0];
   const { viewPortWidth } = useViewPortWidth();
   const { urlParameters, add } = useUrlParams();
-  const { school, schoolName, position } = urlParameters();
+  const { school, schoolName, position, sectionType } = urlParameters();
   const { getData, tableData, loading } = useTableData({ module: Modules.Transfer });
   const { columns } = useHeader({ dataStoreData, programConfigData: programData as unknown as ProgramConfig, tableColumns: [], programStage: dataStoreData.transfer.programStage });
   const [filterState, setFilterState] = useState<{ dataElements: any; attributes: any; }>({ attributes: [], dataElements: [] });
@@ -28,6 +29,7 @@ const TransferExecute = () => {
   const [modalDetails, setModalDetails] = useState<any>({});
   const { getOuDisplayName, loaading: loadingOU } = OuNameContainer({ dataStoreData, setData, setModalDetails });
   const incomingInitialFilter = [`${dataStoreData?.transfer?.destinySchool as unknown as string}:in:${school}`];
+  const location = useLocation()
 
   useEffect(() => {
     if (school) {
@@ -41,7 +43,7 @@ const TransferExecute = () => {
         dataElementFilters: position === "incoming" ? incomingInitialFilter : filterState.dataElements,
       })
     }
-  }, [filterState, refetch, school, tab, pagination, position]);
+  }, [sectionType, filterState, refetch, school, tab, pagination?.page, pagination?.pageSize, position]);
 
   useEffect(() => {
     add('position', tab)

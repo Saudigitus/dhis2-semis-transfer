@@ -2,22 +2,18 @@ import { useRecoilState } from "recoil";
 import { ProgramConfig } from "dhis2-semis-types";
 import React, { useEffect, useState } from "react";
 import { TableDataRefetch, Modules } from "dhis2-semis-types";
-import { useDataStoreKey } from "dhis2-semis-components";
-import { Table, useProgramsKeys } from "dhis2-semis-components";
+import { Table } from "dhis2-semis-components";
 import EnrollmentActionsButtons from "../../components/enrollmentButtons/EnrollmentActionsButtons";
-import { useGetSectionTypeLabel, useHeader, useTableData, useUrlParams, useViewPortWidth } from "dhis2-semis-functions";
+import { useHeader, useTableData, useUrlParams, useViewPortWidth } from "dhis2-semis-functions";
 import InfoPageComp from "../info/info";
 import OuNameContainer from "../../utils/common/getOrgUnit";
 import ApproveTranfer from "../../components/modal/modalTransfer";
-import { useLocation } from "react-router-dom";
+import useGetSelectedKeys from "../../hooks/config/useGetSelectedKeys";
 
-const TransferExecute = () => {
+const Transfer = () => {
   const [pagination, setPagination] = useState({ page: 1, pageSize: 10, totalPages: 0, totalElements: 0 });
   const [tab, setSelectedTab] = useState<string>("incoming");
-  const { sectionName } = useGetSectionTypeLabel();
-  const dataStoreData = useDataStoreKey({ sectionType: sectionName });
-  const programsValues = useProgramsKeys();
-  const programData = programsValues[0];
+  const { dataStoreData, program: programData } = useGetSelectedKeys()
   const { viewPortWidth } = useViewPortWidth();
   const { urlParameters, add } = useUrlParams();
   const { school, schoolName, position, sectionType } = urlParameters();
@@ -29,13 +25,12 @@ const TransferExecute = () => {
   const [modalDetails, setModalDetails] = useState<any>({});
   const { getOuDisplayName, loaading: loadingOU } = OuNameContainer({ dataStoreData, setData, setModalDetails });
   const incomingInitialFilter = [`${dataStoreData?.transfer?.destinySchool as unknown as string}:in:${school}`];
-  const location = useLocation()
 
   useEffect(() => {
     if (school) {
       void getData({
         ...pagination,
-        program: programData.id as string,
+        program: programData!.id as string,
         orgUnit: position === "outgoing" ? school : undefined as unknown as string,
         baseProgramStage: dataStoreData?.registration?.programStage as string,
         attributeFilters: filterState.attributes,
@@ -54,7 +49,6 @@ const TransferExecute = () => {
     setPagination((prev) => ({ ...prev, totalPages: tableData.pagination.totalPages, totalElements: tableData.pagination.totalElements }))
   }, [tableData.data])
 
-  console.log(columns)
   return (
     <div style={{ height: "85vh" }}>
       {!(Boolean(schoolName) && Boolean(school)) ? (
@@ -62,7 +56,7 @@ const TransferExecute = () => {
       ) : (
         <>
           <Table
-            programConfig={programData}
+            programConfig={programData!}
             title="Transfers"
             viewPortWidth={viewPortWidth}
             columns={[...(columns || []), { ...columns?.[0], displayName: "Resquest time", id: "requestTime" }]}
@@ -87,4 +81,4 @@ const TransferExecute = () => {
   );
 };
 
-export default TransferExecute;
+export default Transfer;

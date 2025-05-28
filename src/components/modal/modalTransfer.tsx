@@ -1,18 +1,19 @@
 import React from "react";
 import style from './modalTransfer.module.css'
-import { ModalComponent, useProgramsKeys, WithPadding } from "dhis2-semis-components";
+import { ModalComponent, WithPadding } from "dhis2-semis-components";
 import { ApproveTranferProps } from "../../types/modal/ModalProps";
 import { useGetSectionTypeLabel, useUrlParams } from "dhis2-semis-functions";
 import { useTransferTEI } from "../../hooks/tei/useTransfer";
+import useGetSelectedKeys from "src/hooks/config/useGetSelectedKeys";
 
 function ApproveTranfer(props: ApproveTranferProps): React.ReactElement {
     const { modalDetails, setModalDetails } = props;
     const { urlParameters } = useUrlParams()
     const { school, schoolName } = urlParameters()
     const { sectionName } = useGetSectionTypeLabel();
-    const programsValues = useProgramsKeys();
-    const trackedEntityAttributes = programsValues?.[0]?.trackedEntityType?.trackedEntityTypeAttributes
-    const programTrackedEntityAttributes = programsValues?.[0]?.programTrackedEntityAttributes
+    const { program } = useGetSelectedKeys()
+    const trackedEntityAttributes = program!?.trackedEntityType?.trackedEntityTypeAttributes
+    const programTrackedEntityAttributes = program!?.programTrackedEntityAttributes
     const { loading, transferTEI, rejectTEI, loadingEvents } = useTransferTEI({ selectedTei: modalDetails.row, handleCloseApproval: () => setModalDetails({ open: false }) });
 
     const actions = [

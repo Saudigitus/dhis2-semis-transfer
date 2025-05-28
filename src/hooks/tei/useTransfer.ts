@@ -5,9 +5,9 @@ import { useGetEventsByEnrollment } from '../events/useGetEventsByEnrollment'
 import { TableDataRefetch } from 'dhis2-semis-types'
 import { useTransferConst } from '../transferOptions/statusOptions'
 import { useGetSectionTypeLabel, useUploadEvents } from 'dhis2-semis-functions'
-import { useDataStoreKey, useProgramsKeys } from 'dhis2-semis-components'
 import { formatEnrollmentBody } from '../../utils/tei/enrollmentBody'
 import useGetUsedProgramStages from '../programStages/useGetUsedPProgramStages'
+import useGetSelectedKeys from '../config/useGetSelectedKeys'
 
 const TRANSFERQUERY: any = {
     resource: 'tracker/ownership/transfer',
@@ -21,15 +21,13 @@ const TRANSFERQUERY: any = {
 
 export function useTransferTEI({ selectedTei, handleCloseApproval }: { selectedTei: any, handleCloseApproval: () => void }) {
     const engine = useDataEngine()
-    const { sectionName } = useGetSectionTypeLabel()
-    const dataStoreData = useDataStoreKey({ sectionType: sectionName });
+    const { dataStoreData, program: programData } = useGetSelectedKeys()
     const [loading, setloading] = useState(false)
     const [refetch, setRefetch] = useRecoilState<boolean>(TableDataRefetch)
     const { transferConst } = useTransferConst({ dataStore: dataStoreData })
     const { uploadValues } = useUploadEvents()
     const { getEventsByEnrollment, loading: loadingEvents } = useGetEventsByEnrollment()
     const programStagesToTransfer = useGetUsedProgramStages()
-    const programsValues = useProgramsKeys();
 
     const transferTEI = async (ou: any) => {
         setloading(true)
@@ -46,7 +44,7 @@ export function useTransferTEI({ selectedTei, handleCloseApproval }: { selectedT
             }
         })
             .then(async () => {
-                const trackedEntities = formatEnrollmentBody(programsValues[0], events!, registrationEvent, ou, transferEvent, { ...selectedTei, trackedEntityType: dataStoreData.trackedEntityType }, transferConst({ status: "approved" }), dataStoreData?.transfer?.status)
+                const trackedEntities = formatEnrollmentBody(programData, events!, registrationEvent, ou, transferEvent, { ...selectedTei, trackedEntityType: dataStoreData.trackedEntityType }, transferConst({ status: "approved" }), dataStoreData?.transfer?.status)
                 await uploadValues({ trackedEntities: trackedEntities }, 'COMMIT', 'CREATE_AND_UPDATE').then((resp) => {
                     setloading(false)
                     handleCloseApproval(); setRefetch(!refetch)

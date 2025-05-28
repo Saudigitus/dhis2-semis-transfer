@@ -1,11 +1,10 @@
 import { useState } from "react";
-import { useGetEvents, useGetSectionTypeLabel } from "dhis2-semis-functions";
-import { useDataStoreKey } from "dhis2-semis-components";
+import { useGetEvents } from "dhis2-semis-functions";
+import useGetSelectedKeys from "../config/useGetSelectedKeys";
 
 export function useGetEventsByEnrollment() {
     const { getEvents } = useGetEvents()
-    const { sectionName } = useGetSectionTypeLabel();
-    const dataStoreData = useDataStoreKey({ sectionType: sectionName });
+    const { dataStoreData } = useGetSelectedKeys()
     const [loading, setLoading] = useState(false);
 
     const getEventsByEnrollment = async (

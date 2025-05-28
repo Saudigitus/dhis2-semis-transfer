@@ -1,9 +1,7 @@
-import { useGetSectionTypeLabel } from "dhis2-semis-functions";
-import { useDataStoreKey } from "dhis2-semis-components";
+import useGetSelectedKeys from "../config/useGetSelectedKeys";
 
 const useGetUsedProgramStages = () => {
-    const { sectionName } = useGetSectionTypeLabel()
-    const dataStoreData = useDataStoreKey({ sectionType: sectionName });
+    const { dataStoreData } = useGetSelectedKeys()
     const { performance, "final-result": finalResult, "socio-economics": socioEconomics, registration, transfer } = dataStoreData;
     const performanceProgramStages = performance?.programStages.map((programStage: any) => programStage.programStage) ?? [];
 

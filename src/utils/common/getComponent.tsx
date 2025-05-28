@@ -1,7 +1,6 @@
 import React from "react";
-import { Tooltip } from "@mui/material";
+import { IconButton, Tooltip } from "@mui/material";
 import { ButtonStrip, IconThumbUp24, IconThumbDown24 } from "@dhis2/ui"
-import { IconButton } from "@material-ui/core";
 import { useTransferConst } from "../../hooks/transferOptions/statusOptions";
 
 export function useGetComponent({ setModalDetails, dataStore }: { setModalDetails: (value: any) => void, dataStore: any }) {

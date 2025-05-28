@@ -1,10 +1,10 @@
 import React from 'react'
-import Tooltip from '@material-ui/core/Tooltip';
+import { Tooltip } from '@mui/material';
 import TabComponent from '../tabs/TabComponent';
 import { IconAddCircle24, Button } from "@dhis2/ui";
 import { useUrlParams } from 'dhis2-semis-functions';
-import { useLocation, useNavigate } from 'react-router-dom';
 import styles from './enrollmentActionsButtons.module.css'
+import { useLocation, useNavigate } from 'react-router-dom';
 
 function EnrollmentActionsButtons({ selectedValue, setSelectedValue }: { setSelectedValue: (args: any) => void, selectedValue: string }) {
     const { search } = useLocation()

@@ -4,7 +4,7 @@ import { ModalComponent, WithPadding } from "dhis2-semis-components";
 import { ApproveTranferProps } from "../../types/modal/ModalProps";
 import { useGetSectionTypeLabel, useUrlParams } from "dhis2-semis-functions";
 import { useTransferTEI } from "../../hooks/tei/useTransfer";
-import useGetSelectedKeys from "src/hooks/config/useGetSelectedKeys";
+import useGetSelectedKeys from "../../hooks/config/useGetSelectedKeys";
 
 function ApproveTranfer(props: ApproveTranferProps): React.ReactElement {
     const { modalDetails, setModalDetails } = props;

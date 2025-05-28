@@ -1,5 +1,5 @@
 import { DataStoreProps } from "dhis2-semis-types"
-import { StatusOptionsProps } from "src/types/transfer/statusOptions"
+import { StatusOptionsProps } from "../../types/transfer/statusOptions"
 
 export const useTransferConst = ({ dataStore }: { dataStore: DataStoreProps[0] }) => {
 

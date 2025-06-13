@@ -4,27 +4,22 @@ import useGetSelectedKeys from "../config/useGetSelectedKeys";
 
 export function useGetEventsByEnrollment() {
     const { getEvents } = useGetEvents()
-    const { dataStoreData } = useGetSelectedKeys()
     const [loading, setLoading] = useState(false);
+    const { dataStoreData } = useGetSelectedKeys();
 
-    const getEventsByEnrollment = async (
-        enrollment: string,
-        trackedEntity: string,
-        programStagesToTransfer: string[]
-    ) => {
+    const getEventsByEnrollment = async (enrollment: string, trackedEntity: string, programStagesToTransfer: string[]) => {
         if (!dataStoreData?.program) return;
 
-        setLoading(true);
-
         try {
+            setLoading(true);
+
             const eventPromises = programStagesToTransfer.map(stage =>
                 getEvents({ program: dataStoreData?.program, programStage: stage, trackedEntity, fields: "*" })
                     .then((response: any) => {
-                        console.log(stage, response, 'response')
-                        const event = response?.results?.instances?.find(
+                        const event = response?.filter(
                             (instance: any) => instance.enrollment === enrollment
                         );
-                        return event || null;
+                        return event[0] || null;
                     })
                     .catch(() => null)
             );
@@ -38,8 +33,5 @@ export function useGetEventsByEnrollment() {
         }
     }
 
-    return {
-        getEventsByEnrollment,
-        loading
-    };
+    return { getEventsByEnrollment, loading };
 }

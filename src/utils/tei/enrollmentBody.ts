@@ -11,12 +11,14 @@ export function formatEnrollmentBody(program: any, events: any[], registrationEv
     const trackedEntities = [
         {
             orgUnit: newOu,
+            program: program?.id,
             trackedEntity: tei?.trackedEntity,
+            enrollment: registrationEvent?.enrollment,
             trackedEntityType: tei?.trackedEntityType,
             enrollments: [
                 {
                     orgUnit: newOu,
-                    program: registrationEvent?.program,
+                    program: program?.id,
                     status: "COMPLETED",
                     enrollment: registrationEvent?.enrollment,
                     attributes: attributes,

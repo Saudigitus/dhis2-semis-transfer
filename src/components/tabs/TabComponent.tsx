@@ -1,32 +1,24 @@
 import React from "react";
-import { TabBar, Tab } from "@dhis2/ui";
-import { type TabBarProps } from "../../types/tabs/TabsTypes";
-import { WithPadding } from "dhis2-semis-components";
-import styles from './TabComponent.module.css'
+import { useUrlParams } from "dhis2-semis-functions";
+import { TabComponent } from "dhis2-semis-components";
+import { TabPosistion } from "../../types/tabs/TabsTypes";
 
 const tabsElements = [
-  { name: "Incoming transfer", value: "incoming" },
-  { name: "Outgoing transfer", value: "outgoing" }
+  { name: "Incoming transfer", value: TabPosistion.INCOMING },
+  { name: "Outgoing transfer", value: TabPosistion.OUTGOING }
 ];
 
-function TabComponent(props: TabBarProps): React.ReactElement {
-  const { selectedValue, setSelectedValue } = props;
+function Tab(): React.ReactElement {
+  const { add, useQuery } = useUrlParams()
+  const selectedTab = useQuery().get('position') || TabPosistion.INCOMING;
 
   return (
-    <TabBar className={styles.tab} fixed>
-      {tabsElements.map((element, i) => (
-        <Tab
-          key={i}
-          selected={selectedValue === element.value}
-          onClick={() => {
-            setSelectedValue(element.value);
-          }}
-        >
-          <WithPadding p="7px">{element.name} </WithPadding>
-        </Tab>
-      ))}
-    </TabBar>
+    <TabComponent
+      selectedTab={selectedTab!}
+      tabsElements={tabsElements}
+      onTabClick={(value) => add("position", value.value)}
+    />
   );
 }
 
-export default TabComponent;
+export default Tab;

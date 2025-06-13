@@ -36,6 +36,7 @@ const Transfer = () => {
         ...pagination,
         program: programData!.id as string,
         attributeFilters: filterState.attributes,
+        order: dataStoreData?.defaults?.defaultOrder,
         otherProgramStage: dataStoreData?.transfer?.programStage,
         baseProgramStage: dataStoreData?.registration?.programStage as string,
         orgUnit: position === TabPosistion.OUTGOING ? school : null as unknown as string,

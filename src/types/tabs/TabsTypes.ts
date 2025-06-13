@@ -1,11 +1,4 @@
-interface TabElementsProps {
-  name: string
-  value: string
+export enum TabPosistion {
+  INCOMING = "incoming",
+  OUTGOING = "outgoing"
 }
-
-interface TabBarProps {
-  selectedValue: any
-  setSelectedValue: (arg: any) => void
-}
-
-export type { TabElementsProps, TabBarProps }

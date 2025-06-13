@@ -9,45 +9,45 @@ import InfoPageComp from "../info/info";
 import OuNameContainer from "../../utils/common/getOrgUnit";
 import ApproveTranfer from "../../components/modal/modalTransfer";
 import useGetSelectedKeys from "../../hooks/config/useGetSelectedKeys";
+import { TabPosistion } from "../../types/tabs/TabsTypes";
 
 const Transfer = () => {
-  const [pagination, setPagination] = useState({ page: 1, pageSize: 10, totalPages: 0, totalElements: 0 });
-  const [tab, setSelectedTab] = useState<string>("incoming");
-  const { dataStoreData, program: programData } = useGetSelectedKeys()
+  const [data, setData] = useState<any>([]);
   const { viewPortWidth } = useViewPortWidth();
   const { urlParameters, add } = useUrlParams();
-  const { school, schoolName, position, sectionType } = urlParameters();
+  const [refetch] = useRecoilState(TableDataRefetch);
+  const [modalDetails, setModalDetails] = useState<any>({});
+  const { dataStoreData, program: programData } = useGetSelectedKeys()
   const { getData, tableData, loading } = useTableData({ module: Modules.Transfer });
+  const { school, schoolName, position, sectionType, academicYear } = urlParameters();
+  const [pagination, setPagination] = useState({ page: 1, pageSize: 10, totalPages: 0, totalElements: 0 });
+  const { getOuDisplayName, loaading: loadingOU } = OuNameContainer({ dataStoreData, setData, setModalDetails });
   const { columns } = useHeader({ dataStoreData, programConfigData: programData as unknown as ProgramConfig, programStage: dataStoreData.transfer.programStage });
   const [filterState, setFilterState] = useState<{ dataElements: any; attributes: any; }>({ attributes: [], dataElements: [] });
-  const [refetch] = useRecoilState(TableDataRefetch);
-  const [data, setData] = useState<any>([]);
-  const [modalDetails, setModalDetails] = useState<any>({});
-  const { getOuDisplayName, loaading: loadingOU } = OuNameContainer({ dataStoreData, setData, setModalDetails });
-  const incomingInitialFilter = [`${dataStoreData?.transfer?.destinySchool as unknown as string}:in:${school}`];
+
+  useEffect(() => {
+    if (position == null || position === undefined)
+      add('position', TabPosistion.INCOMING)
+  }, [position])
 
   useEffect(() => {
     if (school) {
       void getData({
         ...pagination,
         program: programData!.id as string,
-        orgUnit: position === "outgoing" ? school : undefined as unknown as string,
-        baseProgramStage: dataStoreData?.registration?.programStage as string,
         attributeFilters: filterState.attributes,
-        otherProgramStage: dataStoreData.transfer.programStage,
-        dataElementFilters: position === "incoming" ? incomingInitialFilter : filterState.dataElements,
-      })
+        otherProgramStage: dataStoreData?.transfer?.programStage,
+        baseProgramStage: dataStoreData?.registration?.programStage as string,
+        orgUnit: position === TabPosistion.OUTGOING ? school : null as unknown as string,
+        dataElementFilters: position === TabPosistion.INCOMING ?
+          [`${dataStoreData?.transfer?.destinySchool as unknown as string}:in:${school}`]
+          : filterState.dataElements,
+      }).then((resp: any) => {
+        void getOuDisplayName(resp?.data)
+        setPagination((prev) => ({ ...prev, totalPages: resp?.pagination.totalPages, totalElements: resp?.pagination.totalElements }))
+      });
     }
-  }, [sectionType, filterState, refetch, school, tab, pagination?.page, pagination?.pageSize, position]);
-
-  useEffect(() => {
-    add('position', tab)
-  }, [tab])
-
-  useEffect(() => {
-    void getOuDisplayName(tableData.data)
-    setPagination((prev) => ({ ...prev, totalPages: tableData.pagination.totalPages, totalElements: tableData.pagination.totalElements }))
-  }, [tableData.data])
+  }, [academicYear, sectionType, filterState, refetch, school, schoolName, pagination?.page, pagination?.pageSize, position]);
 
   return (
     <div style={{ height: "85vh" }}>
@@ -56,27 +56,22 @@ const Transfer = () => {
       ) : (
         <>
           <Table
-            programConfig={programData!}
             title="Transfers"
+            programConfig={programData!}
             viewPortWidth={viewPortWidth}
             columns={[...(columns || []), { ...columns?.[0], displayName: "Resquest time", id: "requestTime" }]}
             tableData={data}
             defaultFilterNumber={3}
             filterState={filterState}
             loading={loading || loadingOU}
-            rightElements={
-              <EnrollmentActionsButtons
-                selectedValue={tab}
-                setSelectedValue={setSelectedTab}
-              />
-            }
             setFilterState={setFilterState}
             pagination={pagination}
             setPagination={setPagination}
+            rightElements={<EnrollmentActionsButtons />}
           />
+          {modalDetails?.open && <ApproveTranfer modalDetails={modalDetails} setModalDetails={setModalDetails} />}
         </>
       )}
-      {modalDetails?.open && <ApproveTranfer modalDetails={modalDetails} setModalDetails={setModalDetails} />}
     </div>
   );
 };

@@ -5,10 +5,11 @@ import { useUrlParams } from 'dhis2-semis-functions';
 import { useGetComponent } from './getComponent';
 import { getFormattedTimeDifference } from './getDiff';
 import { useTransferConst } from '../../hooks/transferOptions/statusOptions';
+import { TabPosistion } from '../../types/tabs/TabsTypes';
 
 function OuNameContainer({ dataStoreData, setData, setModalDetails }: { setModalDetails: any, setData: (args: any) => any, dataStoreData: DataStoreProps[0] }) {
     const { getOuName } = useGetOusData()
-    const [loaading, setLoading] = React.useState(false)
+    const [loaading, setLoading] = React.useState(true)
     const { urlParameters } = useUrlParams()
     const { position } = urlParameters()
     const { getComponent } = useGetComponent({ setModalDetails, dataStore: dataStoreData })
@@ -20,7 +21,6 @@ function OuNameContainer({ dataStoreData, setData, setModalDetails }: { setModal
         const destinySchool = dataStoreData.transfer.destinySchool
 
         for (let data of tableData) {
-
             if (idHolder[data[destinySchool]]) {
                 data[destinySchool] = <span>{idHolder[data[destinySchool]]}</span>
             } else {
@@ -43,10 +43,9 @@ function OuNameContainer({ dataStoreData, setData, setModalDetails }: { setModal
                 data['requestTime'] = getFormattedTimeDifference(data.registrationEventOccurredAt)
             else data['requestTime'] = '--'
 
-            data[dataStoreData.transfer.status] = getComponent(data[dataStoreData.transfer.status], data, position == 'incoming', false)
+            data[dataStoreData.transfer.status] = getComponent(data[dataStoreData.transfer.status], data, position == TabPosistion.INCOMING, false)
         }
 
-        console.log(tableData)
         setData(tableData)
         setLoading(false)
     }

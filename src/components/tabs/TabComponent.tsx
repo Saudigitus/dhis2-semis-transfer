@@ -8,15 +8,15 @@ const tabsElements = [
   { name: "Outgoing transfer", value: TabPosistion.OUTGOING }
 ];
 
-function Tab(): React.ReactElement {
+function Tab() {
   const { add, useQuery } = useUrlParams()
   const selectedTab = useQuery().get('position') || TabPosistion.INCOMING;
 
   return (
     <TabComponent
-      selectedTab={selectedTab!}
+      selectedTab={selectedTab}
       tabsElements={tabsElements}
-      onTabClick={(value) => add("position", value.value)}
+      onTabClick={(value) => add("position", value?.value)}
     />
   );
 }

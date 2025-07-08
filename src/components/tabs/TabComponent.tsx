@@ -10,7 +10,7 @@ const tabsElements = [
 
 function Tab() {
   const { add, useQuery } = useUrlParams()
-  const selectedTab = useQuery().get('position') || TabPosistion.INCOMING;
+  const selectedTab = useQuery.get('position') || TabPosistion.INCOMING;
 
   return (
     <TabComponent

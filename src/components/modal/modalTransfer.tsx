@@ -9,7 +9,7 @@ import useGetSelectedKeys from "../../hooks/config/useGetSelectedKeys";
 function ApproveTranfer(props: ApproveTranferProps): React.ReactElement {
     const { modalDetails, setModalDetails } = props;
     const { urlParameters } = useUrlParams()
-    const { school, schoolName } = urlParameters()
+    const { school, schoolName } = urlParameters
     const { sectionName } = useGetSectionTypeLabel();
     const { program } = useGetSelectedKeys()
     const trackedEntityAttributes = program!?.trackedEntityType?.trackedEntityTypeAttributes

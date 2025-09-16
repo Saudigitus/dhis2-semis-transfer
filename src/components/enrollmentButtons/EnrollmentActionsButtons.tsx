@@ -10,7 +10,7 @@ function EnrollmentActionsButtons() {
     const { search } = useLocation()
     const navigate = useNavigate()
     const { urlParameters } = useUrlParams();
-    const { school: orgUnit } = urlParameters();
+    const { school: orgUnit } = urlParameters;
 
     return (
         <div className={styles.container}>

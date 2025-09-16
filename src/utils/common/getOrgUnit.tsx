@@ -11,7 +11,7 @@ function OuNameContainer({ dataStoreData, setData, setModalDetails }: { setModal
     const { getOuName } = useGetOusData()
     const [loaading, setLoading] = React.useState(true)
     const { urlParameters } = useUrlParams()
-    const { position } = urlParameters()
+    const { position } = urlParameters
     const { getComponent } = useGetComponent({ setModalDetails, dataStore: dataStoreData })
     const { transferConst } = useTransferConst({ dataStore: dataStoreData })
 

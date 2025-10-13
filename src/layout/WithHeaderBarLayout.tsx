@@ -14,6 +14,7 @@ const WithHeaderBarLayout = () => {
                 <SemisHeader
                     baseUrl={baseUrl}
                     program={program}
+                    headerItems={{hideDataStoreFilters:true}}
                     schoolCalendar={schoolCalendar}
                     dataStoreValues={dataStoreData}
                 />

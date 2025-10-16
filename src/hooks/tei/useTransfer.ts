@@ -52,8 +52,18 @@ export function useTransferTEI({ selectedTei, handleCloseApproval }: { selectedT
                 }
             })
                 .then(async () => {
-                    const trackedEntities = formatEnrollmentBody(programData, events!, registrationEvent, ou, transferEvent, { ...selectedTei, trackedEntityType: dataStoreData.trackedEntityType }, transferConst({ status: "approved" }), dataStoreData?.transfer?.status)
-                    await uploadValues({ trackedEntities: trackedEntities }, 'COMMIT', 'CREATE_AND_UPDATE').then((resp) => {
+                    const transferStatus = dataStoreData.transfer?.statusOptions?.find((x: any) => x.configKey === "approvedCode")?.code
+
+                    const trackedEntities = formatEnrollmentBody(programData,
+                        events!,
+                        registrationEvent,
+                        ou,
+                        transferEvent,
+                        { ...selectedTei, trackedEntityType: dataStoreData.trackedEntityType },
+                        transferStatus,
+                        dataStoreData?.transfer?.status
+                    )
+                    await uploadValues({ trackedEntities: trackedEntities }, 'COMMIT', 'CREATE_AND_UPDATE').then(() => {
                         setloading(false)
                         handleCloseApproval(); setRefetch(!refetch)
                     })
@@ -69,16 +79,18 @@ export function useTransferTEI({ selectedTei, handleCloseApproval }: { selectedT
     const rejectTEI = async () => {
         setloading(true)
         const events = await getEventsByEnrollment(selectedTei?.enrollmentId, selectedTei?.trackedEntity, [dataStoreData.transfer.programStage])
+        const transferStatus = dataStoreData?.transfer?.statusOptions?.find((x: any) => x.configKey === "reprovedCode")?.code
+
         const updatedEvent = [{
             ...events?.[0],
             dataValues: [...events?.[0]?.dataValues?.filter((x: any) => x?.dataElement != dataStoreData?.transfer?.status),
             {
                 dataElement: dataStoreData?.transfer?.status,
-                value: transferConst({ status: "reproved" })
+                value: transferStatus
             }]
         }]
 
-        await uploadValues({ events: updatedEvent }, 'COMMIT', 'CREATE_AND_UPDATE').then((resp) => {
+        await uploadValues({ events: updatedEvent }, 'COMMIT', 'CREATE_AND_UPDATE').then(() => {
             setloading(false)
             handleCloseApproval(); setRefetch(!refetch)
         })

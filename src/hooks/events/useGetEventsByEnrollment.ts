@@ -13,7 +13,7 @@ export function useGetEventsByEnrollment() {
         try {
             setLoading(true);
 
-            const eventPromises = programStagesToTransfer.map(stage =>
+            const eventPromises = programStagesToTransfer?.map(stage =>
                 getEvents({ program: dataStoreData?.program, programStage: stage, trackedEntity, fields: "*" })
                     .then((response: any) => {
                         const event = response?.filter(

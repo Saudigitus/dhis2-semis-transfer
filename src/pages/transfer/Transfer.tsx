@@ -18,11 +18,11 @@ const Transfer = () => {
   const [refetch] = useRecoilState(TableDataRefetch);
   const [modalDetails, setModalDetails] = useState<any>({});
   const { dataStoreData, program: programData } = useGetSelectedKeys()
-  const { getData, tableData, loading } = useTableData({ module: Modules.Transfer });
+  const { getData, loading } = useTableData({ module: Modules.Transfer });
   const { school, schoolName, position, sectionType, academicYear } = urlParameters;
-  const [pagination, setPagination] = useState({ page: 1, pageSize: 50, totalPages: 0, totalElements: 0 });
+  const [pagination, setPagination] = useState({ page: 1, pageSize: 5, totalPages: 0, totalElements: 0 });
   const { getOuDisplayName, loaading: loadingOU } = OuNameContainer({ dataStoreData, setData, setModalDetails });
-  const { columns } = useHeader({ dataStoreData, programConfigData: programData as unknown as ProgramConfig, programStage: dataStoreData.transfer.programStage });
+  const { columns } = useHeader({ dataStoreData, programConfigData: programData as unknown as ProgramConfig, programStage: dataStoreData?.transfer?.programStage });
   const [filterState, setFilterState] = useState<{ dataElements: any; attributes: any; }>({ attributes: [], dataElements: [] });
 
   useEffect(() => {
@@ -44,7 +44,7 @@ const Transfer = () => {
           : filterState.dataElements,
       }).then((resp: any) => {
         void getOuDisplayName(resp?.data)
-        setPagination((prev) => ({ ...prev, totalPages: resp?.pagination.totalPages, totalElements: resp?.pagination.totalElements }))
+        setPagination((prev: any) => ({ ...prev, totalPages: resp?.pagination?.totalPages, totalElements: resp?.pagination?.totalElements }))
       });
     }
   }, [academicYear, sectionType, filterState, refetch, school, schoolName, pagination?.page, pagination?.pageSize, position]);

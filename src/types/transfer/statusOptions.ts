@@ -1,5 +1,4 @@
-type StatusOptionsType = "pending" | "approved" | "reproved"
-
+type StatusOptionsType = "approvedCode" | "penddingCode" | "reprovedCode" 
 interface StatusOptionsProps {
     status: StatusOptionsType
 }

@@ -6,13 +6,13 @@ import { useTransferConst } from "../../hooks/transferOptions/statusOptions";
 export function useGetComponent({ setModalDetails, dataStore }: { setModalDetails: (value: any) => void, dataStore: any }) {
     const { transferConst } = useTransferConst({ dataStore })
 
-    const getComponent = (option: any, row: any, incoming: boolean, disabled = false) => {
+    const getComponent = (option: { configKey: string, code: string }, row: any, incoming: boolean, disabled = false) => {
 
         const codeComponent = {
-            [transferConst({ status: "pending" }) as string]: (
+            [transferConst({ status: "penddingCode" }) as string]: (
                 <>
                     {
-                        !incoming ? <h6 style={{ fontSize: "13px", color: "#000" }}>{option}</h6> :
+                        !incoming ? <h6 style={{ fontSize: "13px", color: "#000" }}>{option?.code}</h6> :
                             <ButtonStrip>
                                 <Tooltip title="Approve" placement="top" arrow>
                                     <IconButton
@@ -39,21 +39,22 @@ export function useGetComponent({ setModalDetails, dataStore }: { setModalDetail
                     }
                 </>
             ),
-            [transferConst({ status: "approved" }) as string]: <h6 style={{ fontSize: "13px", color: "#277314" }}>{option}</h6>,
-            [transferConst({ status: "reproved" }) as string]: <h6 style={{ fontSize: "13px", color: "#D64D4D" }}>{option}</h6>
+            [transferConst({ status: "approvedCode" }) as string]: <h6 style={{ fontSize: "13px", color: "#277314" }}>{option?.code}</h6>,
+            [transferConst({ status: "reprovedCode" }) as string]: <h6 style={{ fontSize: "13px", color: "#D64D4D" }}>{option?.code}</h6>,
+
         }
 
         return <>
             {
-                <Tooltip title={option}
+                <Tooltip title={option?.configKey}
+
                     componentsProps={{
                         tooltip: {
                             sx: { textTransform: 'capitalize' }
                         }
                     }}
-                    disableHoverListener={option === 'Absense'}
                 >
-                    {codeComponent?.[option]}
+                    {codeComponent?.[option?.configKey] ?? option?.code}
                 </Tooltip>
             }
         </>

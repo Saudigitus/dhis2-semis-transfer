@@ -27,7 +27,7 @@ function OuNameContainer({ dataStoreData, setData, setModalDetails }: { setModal
 
         for (const data of tableData) {
             if (data[destinySchool]) allOuIds.add(data[destinySchool]);
-            if (data['orgUnitId']) allOuIds.add(data['orgUnitId']);
+            if (data['ownershipOu']) allOuIds.add(data['ownershipOu']);
         }
 
         // Fetch OU names only for unknown IDs
@@ -45,7 +45,7 @@ function OuNameContainer({ dataStoreData, setData, setModalDetails }: { setModal
 
         for (const data of tableData) {
             data[destinySchool] = idHolder[data[destinySchool]] || data[destinySchool];
-            data[originSchool] = idHolder[data['orgUnitId']] || data['orgUnitId'];
+            data[originSchool] = idHolder[data['ownershipOu']] || data['ownershipOu'];
 
             if (data[dataStoreData.transfer.status] === transferConst({ status: "pending" })) {
                 data['requestTime'] = getFormattedTimeDifference(data.registrationEventOccurredAt);

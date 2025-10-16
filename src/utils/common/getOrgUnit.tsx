@@ -16,38 +16,53 @@ function OuNameContainer({ dataStoreData, setData, setModalDetails }: { setModal
     const { transferConst } = useTransferConst({ dataStore: dataStoreData })
 
     async function getOuDisplayName(tableData: any[]) {
-        let idHolder: any = {}
-        setLoading(true)
-        const destinySchool = dataStoreData.transfer.destinySchool
+        setLoading(true);
 
-        for (let data of tableData) {
-            if (idHolder[data[destinySchool]]) {
-                data[destinySchool] = <span>{idHolder[data[destinySchool]]}</span>
-            } else {
-                await getOuName(data[destinySchool]).then((res: any) => {
-                    idHolder[data[destinySchool]] = res.results?.name
-                    data[destinySchool] = <span>{res.results?.name}</span>
-                })
-            }
+        const idHolder: Record<string, string> = {};
+        const destinySchool = dataStoreData.transfer.destinySchool;
+        const originSchool = dataStoreData.transfer.originSchool;
 
-            if (idHolder[data.orgUnitId]) {
-                data['sourceOUname'] = idHolder[data.orgUnitId]
-            } else {
-                await getOuName(data.orgUnitId).then((res: any) => {
-                    idHolder[data[destinySchool]] = res.results?.name
-                    data['sourceOUname'] = res.results?.name
-                })
-            }
+        // Collect all unique OU IDs to fetch at once
+        const allOuIds = new Set<string>();
 
-            if (data[dataStoreData.transfer.status] === transferConst({ status: "pending" }))
-                data['requestTime'] = getFormattedTimeDifference(data.registrationEventOccurredAt)
-            else data['requestTime'] = '--'
-
-            data[dataStoreData.transfer.status] = getComponent(data[dataStoreData.transfer.status], data, position == TabPosistion.INCOMING, false)
+        for (const data of tableData) {
+            if (data[destinySchool]) allOuIds.add(data[destinySchool]);
+            if (data['ownershipOu']) allOuIds.add(data['ownershipOu']);
         }
 
-        setData(tableData)
-        setLoading(false)
+        // Fetch OU names only for unknown IDs
+        const ouIdsToFetch = Array.from(allOuIds).filter((id) => !idHolder[id]);
+
+        if (ouIdsToFetch.length > 0) {
+            const responses = await Promise.all(ouIdsToFetch.map((id) => getOuName(id).catch(() => null)));
+
+            responses.forEach((res: any, i) => {
+                const id = ouIdsToFetch[i];
+                const name = res?.results?.name ?? id;
+                idHolder[id] = name;
+            });
+        }
+
+        for (const data of tableData) {
+            data[destinySchool] = idHolder[data[destinySchool]] || data[destinySchool];
+            data[originSchool] = idHolder[data['ownershipOu']] || data['ownershipOu'];
+
+            if (data[dataStoreData.transfer.status] === transferConst({ status: "pending" })) {
+                data['requestTime'] = getFormattedTimeDifference(data.registrationEventOccurredAt);
+            } else {
+                data['requestTime'] = '--';
+            }
+
+            data[dataStoreData.transfer.status] = getComponent(
+                data[dataStoreData.transfer.status],
+                data,
+                position === TabPosistion.INCOMING,
+                false
+            );
+        }
+
+        setData(tableData);
+        setLoading(false);
     }
 
     return { getOuDisplayName, loaading }

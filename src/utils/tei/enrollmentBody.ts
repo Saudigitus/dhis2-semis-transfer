@@ -2,9 +2,9 @@ export function formatEnrollmentBody(program: any, events: any[], registrationEv
     let attributes = []
 
     for (const att of program?.programTrackedEntityAttributes) {
-        if (tei?.[att.trackedEntityAttribute.id]) attributes.push({
-            attribute: att.trackedEntityAttribute.id,
-            value: tei?.[att.trackedEntityAttribute.id]
+        if (tei?.[att?.trackedEntityAttribute?.id]) attributes.push({
+            attribute: att?.trackedEntityAttribute?.id,
+            value: tei?.[att?.trackedEntityAttribute?.id]
         })
     }
 

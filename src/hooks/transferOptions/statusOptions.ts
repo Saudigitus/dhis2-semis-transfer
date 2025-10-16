@@ -4,7 +4,9 @@ import { StatusOptionsProps } from "../../types/transfer/statusOptions"
 export const useTransferConst = ({ dataStore }: { dataStore: DataStoreProps[0] }) => {
 
     function transferConst({ status }: StatusOptionsProps) {
-        return dataStore?.transfer?.statusOptions?.find((option: any) => option.key === status)?.code
+        const data = (dataStore?.transfer?.statusOptions as unknown as any)?.find((option: any) => option.configKey === status)?.configKey
+
+        return data
     }
 
     return {

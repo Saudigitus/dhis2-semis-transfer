@@ -48,7 +48,7 @@ const Transfer = () => {
       });
     }
   }, [academicYear, sectionType, filterState, refetch, school, schoolName, pagination?.page, pagination?.pageSize, position]);
-
+  
   return (
     <div style={{ height: "85vh" }}>
       {!(Boolean(schoolName) && Boolean(school)) ? (

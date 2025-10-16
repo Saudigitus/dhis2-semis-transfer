@@ -41,24 +41,27 @@ function OuNameContainer({ dataStoreData, setData, setModalDetails }: { setModal
                 const name = res?.results?.name ?? id;
                 idHolder[id] = name;
             });
-        }
 
-        for (const data of tableData) {
-            data[destinySchool] = idHolder[data[destinySchool]] || data[destinySchool];
-            data[originSchool] = idHolder[data['ownershipOu']] || data['ownershipOu'];
 
-            if (data[dataStoreData.transfer.status] === transferConst({ status: "pending" })) {
-                data['requestTime'] = getFormattedTimeDifference(data.registrationEventOccurredAt);
-            } else {
-                data['requestTime'] = '--';
+            for (const data of tableData) {
+                data[destinySchool] = idHolder[data[destinySchool]] || data[destinySchool];
+                data[originSchool] = idHolder[data['ownershipOu']] || data['ownershipOu'];
+
+                const configKey = (dataStoreData?.transfer?.statusOptions as unknown as any)?.find((x: any) => x.code == data[dataStoreData.transfer.status])
+
+                if (configKey?.configKey === transferConst({ status: "penddingCode" })) {
+                    data['requestTime'] = getFormattedTimeDifference(data.registrationEventOccurredAt);
+                } else {
+                    data['requestTime'] = '--';
+                }
+
+                data[dataStoreData.transfer.status] = getComponent(
+                    configKey,
+                    data,
+                    position === TabPosistion.INCOMING,
+                    data?.status == 'CANCELLED'
+                );
             }
-
-            data[dataStoreData.transfer.status] = getComponent(
-                data[dataStoreData.transfer.status],
-                data,
-                position === TabPosistion.INCOMING,
-                false
-            );
         }
 
         setData(tableData);

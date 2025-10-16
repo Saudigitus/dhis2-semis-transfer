@@ -11,7 +11,7 @@ function ApproveTranfer(props: ApproveTranferProps): React.ReactElement {
     const { urlParameters } = useUrlParams()
     const { school, schoolName } = urlParameters
     const { sectionName } = useGetSectionTypeLabel();
-    const { program } = useGetSelectedKeys()
+    const { program, dataStoreData } = useGetSelectedKeys()
     const trackedEntityAttributes = program!?.trackedEntityType?.trackedEntityTypeAttributes
     const programTrackedEntityAttributes = program!?.programTrackedEntityAttributes
     const { loading, transferTEI, rejectTEI, loadingEvents } = useTransferTEI({ selectedTei: modalDetails.row, handleCloseApproval: () => setModalDetails({ open: false }) });
@@ -43,12 +43,12 @@ function ApproveTranfer(props: ApproveTranferProps): React.ReactElement {
                     {modalDetails?.approved
                         ? <div className="py-2">
                             Are you sure you want to{" "} <span className="text-danger"> approve the transfer </span> of{" "}  <strong>{modalDetails?.row?.[trackedEntityAttributes[1]?.trackedEntityAttribute.id ?? programTrackedEntityAttributes[2]?.trackedEntityAttribute.id]} {modalDetails?.row?.[trackedEntityAttributes[0]?.trackedEntityAttribute?.id ?? programTrackedEntityAttributes[3]?.trackedEntityAttribute.id]} </strong>{" "} from{" "}
-                            <strong>{modalDetails?.row?.sourceOUname}</strong>{" "} to{" "}
+                            <strong>{modalDetails?.row?.[dataStoreData?.transfer?.originSchool]}</strong>{" "} to{" "}
                             <strong>{schoolName}</strong>?
                         </div>
                         : <div className="py-2">
                             Are you sure you want to{" "} <span className="text-danger"> reject the transfer </span> of{" "}  <strong>{modalDetails?.row?.[trackedEntityAttributes[1]?.trackedEntityAttribute.id ?? programTrackedEntityAttributes[2]?.trackedEntityAttribute.id]} {modalDetails?.row?.[trackedEntityAttributes[0]?.trackedEntityAttribute?.id ?? programTrackedEntityAttributes[3]?.trackedEntityAttribute.id]}</strong>{" "} from{" "}
-                            <strong>{modalDetails?.row?.sourceOUname}</strong>{" "} to{" "}
+                            <strong>{modalDetails?.row?.[dataStoreData?.transfer?.originSchool]}</strong>{" "} to{" "}
                             <strong>{schoolName}</strong>
                         </div>
                     }

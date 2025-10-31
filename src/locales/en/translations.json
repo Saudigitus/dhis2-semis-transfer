@@ -1,0 +1,21 @@
+{
+    "Please select an organisation unit before": "Please select an organisation unit before",
+    "Perform transfer": "Perform transfer",
+    "Cancel": "Cancel",
+    "Confirm": "Confirm",
+    "Attention": "Attention",
+    "This action will transfer this {{section}} into this school.": "This action will transfer this {{section}} into this school.",
+    "You are about to reject the {{section}} transfer to this school.": "You are about to reject the {{section}} transfer to this school.",
+    "Are you sure you want to approve the transfer of ": "Are you sure you want to approve the transfer of ",
+    "from": "from",
+    "to": "to",
+    "Are you sure you want to reject the transfer of": "Are you sure you want to reject the transfer of",
+    "Transfer Approval": "Transfer Approval",
+    "Incoming transfer": "Incoming transfer",
+    "Outgoing transfer": "Outgoing transfer",
+    "SEMIS - Transfer": "SEMIS - Transfer",
+    "Select the Organization unit you want to view data": "Select the Organization unit you want to view data",
+    "Use global filters(Class, Grade and Academic Year)": "Use global filters(Class, Grade and Academic Year)",
+    "Transfers": "Transfers",
+    "Resquest time": "Resquest time"
+}

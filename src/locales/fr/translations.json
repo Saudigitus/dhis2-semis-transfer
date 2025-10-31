@@ -1,0 +1,23 @@
+{
+    "Please select an organisation unit before": "Veuillez d’abord sélectionner une unité d’organisation",
+    "Perform transfer": "Effectuer le transfert",
+    "Cancel": "Annuler",
+    "Confirm": "Confirmer",
+    "Attention": "Attention",
+    "This action will transfer this {{section}} into this school.": "Cette action transférera ce(tte) {{section}} dans cette école.",
+    "You are about to reject the {{section}} transfer to this school.": "Vous êtes sur le point de rejeter le transfert de ce(tte) {{section}} vers cette école.",
+    "Are you sure you want to approve the transfer of ": "Êtes-vous sûr de vouloir approuver le transfert de ",
+    "from": "de",
+    "to": "vers",
+    "Are you sure you want to reject the transfer of": "Êtes-vous sûr de vouloir rejeter le transfert de",
+    "Transfer Approval": "Approbation du transfert",
+    "Incoming transfer": "Transfert entrant",
+    "Outgoing transfer": "Transfert sortant",
+    "SEMIS - Transfer": "SEMIS - Transfert",
+    "Select the Organization unit you want to view data": "Sélectionnez l’unité d’organisation dont vous souhaitez voir les données",
+    "Use global filters(Class, Grade and Academic Year)": "Utilisez les filtres globaux (Classe, Niveau et Année académique)",
+    "Transfers": "Transferts",
+    "Resquest time": "Heure de la demande",
+    "student": "étudiant",
+    "staff": "personnel"
+}

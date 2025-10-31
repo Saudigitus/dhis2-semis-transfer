@@ -66,3 +66,9 @@ msgstr "Transferências"
 
 msgid "Resquest time"
 msgstr "Hora da solicitação"
+
+msgid "student"
+msgstr "estudante"
+
+msgid "staff"
+msgstr "funcionário"

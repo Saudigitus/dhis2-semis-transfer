@@ -4,63 +4,65 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=2; plural=(n > 1)\n"
 "POT-Creation-Date: 2025-10-31T08:35:52.045Z\n"
 "PO-Revision-Date: 2025-10-31T08:35:52.045Z\n"
+"Language: fr\n"
+"Content-Language: fr-FR\n"
 
 msgid "Please select an organisation unit before"
-msgstr "Please select an organisation unit before"
+msgstr "Veuillez d’abord sélectionner une unité d’organisation"
 
 msgid "Perform transfer"
-msgstr "Perform transfer"
+msgstr "Effectuer le transfert"
 
 msgid "Cancel"
-msgstr "Cancel"
+msgstr "Annuler"
 
 msgid "Confirm"
-msgstr "Confirm"
+msgstr "Confirmer"
 
 msgid "Attention"
 msgstr "Attention"
 
 msgid "This action will transfer this {{section}} into this school."
-msgstr "This action will transfer this {{section}} into this school."
+msgstr "Cette action transférera ce(tte) {{section}} dans cette école."
 
 msgid "You are about to reject the {{section}} transfer to this school."
-msgstr "You are about to reject the {{section}} transfer to this school."
+msgstr "Vous êtes sur le point de rejeter le transfert de ce(tte) {{section}} vers cette école."
 
 msgid "Are you sure you want to approve the transfer of "
-msgstr "Are you sure you want to approve the transfer of "
+msgstr "Êtes-vous sûr de vouloir approuver le transfert de "
 
 msgid "from"
-msgstr "from"
+msgstr "de"
 
 msgid "to"
-msgstr "to"
+msgstr "vers"
 
 msgid "Are you sure you want to reject the transfer of"
-msgstr "Are you sure you want to reject the transfer of"
+msgstr "Êtes-vous sûr de vouloir rejeter le transfert de"
 
 msgid "Transfer Approval"
-msgstr "Transfer Approval"
+msgstr "Approbation du transfert"
 
 msgid "Incoming transfer"
-msgstr "Incoming transfer"
+msgstr "Transfert entrant"
 
 msgid "Outgoing transfer"
-msgstr "Outgoing transfer"
+msgstr "Transfert sortant"
 
 msgid "SEMIS - Transfer"
-msgstr "SEMIS - Transfer"
+msgstr "SEMIS - Transfert"
 
 msgid "Select the Organization unit you want to view data"
-msgstr "Select the Organization unit you want to view data"
+msgstr "Sélectionnez l’unité d’organisation dont vous souhaitez voir les données"
 
 msgid "Use global filters(Class, Grade and Academic Year)"
-msgstr "Use global filters(Class, Grade and Academic Year)"
+msgstr "Utilisez les filtres globaux (Classe, Niveau et Année académique)"
 
 msgid "Transfers"
-msgstr "Transfers"
+msgstr "Transferts"
 
 msgid "Resquest time"
-msgstr "Resquest time"
+msgstr "Heure de la demande"

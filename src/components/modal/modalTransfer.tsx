@@ -7,7 +7,7 @@ import { useTransferTEI } from "../../hooks/tei/useTransfer";
 import useGetSelectedKeys from "../../hooks/config/useGetSelectedKeys";
 
 function ApproveTranfer(props: ApproveTranferProps): React.ReactElement {
-    const { modalDetails, setModalDetails } = props;
+    const { modalDetails, setModalDetails, i18n } = props;
     const { urlParameters } = useUrlParams()
     const { school, schoolName } = urlParameters
     const { sectionName } = useGetSectionTypeLabel();
@@ -17,9 +17,9 @@ function ApproveTranfer(props: ApproveTranferProps): React.ReactElement {
     const { loading, transferTEI, rejectTEI, loadingEvents } = useTransferTEI({ selectedTei: modalDetails.row, handleCloseApproval: () => setModalDetails({ open: false }) });
 
     const actions = [
-        { id: "cancel", name: "Cancel", disabled: false, onClick: () => setModalDetails({ open: false }) },
+        { id: "cancel", name: i18n.t("Cancel"), disabled: false, onClick: () => setModalDetails({ open: false }) },
         {
-            id: "confirm", name: "Confirm", primary: true, loading: !!(loadingEvents || loading), disabled: !!(loadingEvents || loading), onClick: () => {
+            id: "confirm", name: i18n.t("Confirm"), primary: true, loading: !!(loadingEvents || loading), disabled: !!(loadingEvents || loading), onClick: () => {
                 if (modalDetails?.approved) {
                     transferTEI(school)
                 } else {
@@ -34,21 +34,39 @@ function ApproveTranfer(props: ApproveTranferProps): React.ReactElement {
             children={
                 <WithPadding p="10px 0px">
                     {modalDetails?.approved
-                        ? <span><span className="text-danger">Attention:</span> This action will transfer this {sectionName} into this school.</span>
-                        : <span><span className="text-danger">Attention:</span> You are about to reject the {sectionName}&apos;s transfer to this school.</span>
+                        ? <span>
+                            <span className="text-danger">
+                                {i18n.t("Attention")}:
+                            </span>
+                            {
+                                i18n.t('This action will transfer this {{section}} into this school.', {
+                                    section: `${i18n.t(sectionName)}s`,
+                                })
+                            }
+                        </span>
+                        : <span>
+                            <span className="text-danger">
+                                {i18n.t("Attention")}:
+                            </span>
+                            {
+                                i18n.t('You are about to reject the {{section}} transfer to this school.', {
+                                    section: `${i18n.t(sectionName)}s`,
+                                })
+                            }
+                        </span>
                     }
 
                     <div className={style.divider}></div>
 
                     {modalDetails?.approved
                         ? <div className="py-2">
-                            Are you sure you want to{" "} <span className="text-danger"> approve the transfer </span> of{" "}  <strong>{modalDetails?.row?.[trackedEntityAttributes[1]?.trackedEntityAttribute.id ?? programTrackedEntityAttributes[2]?.trackedEntityAttribute.id]} {modalDetails?.row?.[trackedEntityAttributes[0]?.trackedEntityAttribute?.id ?? programTrackedEntityAttributes[3]?.trackedEntityAttribute.id]} </strong>{" "} from{" "}
-                            <strong>{modalDetails?.row?.[dataStoreData?.transfer?.originSchool]}</strong>{" "} to{" "}
+                            {i18n.t("Are you sure you want to approve the transfer of ")} <strong>{modalDetails?.row?.[trackedEntityAttributes[1]?.trackedEntityAttribute.id ?? programTrackedEntityAttributes[2]?.trackedEntityAttribute.id]} {modalDetails?.row?.[trackedEntityAttributes[0]?.trackedEntityAttribute?.id ?? programTrackedEntityAttributes[3]?.trackedEntityAttribute.id]} </strong>{" "} {i18n.t("from")}{" "}
+                            <strong>{modalDetails?.row?.[dataStoreData?.transfer?.originSchool]}</strong>{" "} {i18n.t("to")} {" "}
                             <strong>{schoolName}</strong>?
                         </div>
                         : <div className="py-2">
-                            Are you sure you want to{" "} <span className="text-danger"> reject the transfer </span> of{" "}  <strong>{modalDetails?.row?.[trackedEntityAttributes[1]?.trackedEntityAttribute.id ?? programTrackedEntityAttributes[2]?.trackedEntityAttribute.id]} {modalDetails?.row?.[trackedEntityAttributes[0]?.trackedEntityAttribute?.id ?? programTrackedEntityAttributes[3]?.trackedEntityAttribute.id]}</strong>{" "} from{" "}
-                            <strong>{modalDetails?.row?.[dataStoreData?.transfer?.originSchool]}</strong>{" "} to{" "}
+                            {i18n.t("Are you sure you want to reject the transfer of")}  <strong>{modalDetails?.row?.[trackedEntityAttributes[1]?.trackedEntityAttribute.id ?? programTrackedEntityAttributes[2]?.trackedEntityAttribute.id]} {modalDetails?.row?.[trackedEntityAttributes[0]?.trackedEntityAttribute?.id ?? programTrackedEntityAttributes[3]?.trackedEntityAttribute.id]}</strong>{" "} {i18n.t("from")}{" "}
+                            <strong>{modalDetails?.row?.[dataStoreData?.transfer?.originSchool]}</strong>{" "} {i18n.t("to")} {" "}
                             <strong>{schoolName}</strong>
                         </div>
                     }
@@ -56,7 +74,7 @@ function ApproveTranfer(props: ApproveTranferProps): React.ReactElement {
             }
             open={modalDetails.open}
             handleClose={() => setModalDetails({ open: false })}
-            title="Transfer Approval"
+            title={i18n.t("Transfer Approval")}
             showActions
             size="large"
             actions={actions}

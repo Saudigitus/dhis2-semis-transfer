@@ -1,5 +1,5 @@
 import { useRecoilState } from "recoil";
-import { ProgramConfig } from "dhis2-semis-types";
+import { D2I18n, ProgramConfig } from "dhis2-semis-types";
 import React, { useEffect, useState } from "react";
 import { TableDataRefetch, Modules } from "dhis2-semis-types";
 import { Table } from "dhis2-semis-components";
@@ -11,7 +11,7 @@ import ApproveTranfer from "../../components/modal/modalTransfer";
 import useGetSelectedKeys from "../../hooks/config/useGetSelectedKeys";
 import { TabPosistion } from "../../types/tabs/TabsTypes";
 
-const Transfer = () => {
+const Transfer = ({ i18n }: { i18n: D2I18n }) => {
   const [data, setData] = useState<any>([]);
   const { viewPortWidth } = useViewPortWidth();
   const { urlParameters, add } = useUrlParams();
@@ -48,18 +48,18 @@ const Transfer = () => {
       });
     }
   }, [academicYear, sectionType, filterState, refetch, school, schoolName, pagination?.page, pagination?.pageSize, position]);
-  
+
   return (
     <div style={{ height: "85vh" }}>
       {!(Boolean(schoolName) && Boolean(school)) ? (
-        <InfoPageComp />
+        <InfoPageComp i18n={i18n} />
       ) : (
         <>
           <Table
-            title="Transfers"
+            title={i18n.t("Transfers")}
             programConfig={programData!}
             viewPortWidth={viewPortWidth}
-            columns={[...(columns || []), { ...columns?.[0], displayName: "Resquest time", id: "requestTime" }]}
+            columns={[...(columns || []), { ...columns?.[0], displayName: i18n.t("Resquest time"), id: "requestTime" }]}
             tableData={data}
             defaultFilterNumber={3}
             filterState={filterState}
@@ -67,9 +67,9 @@ const Transfer = () => {
             setFilterState={setFilterState}
             pagination={pagination}
             setPagination={setPagination}
-            rightElements={<EnrollmentActionsButtons />}
+            rightElements={<EnrollmentActionsButtons  i18n={i18n} />}
           />
-          {modalDetails?.open && <ApproveTranfer modalDetails={modalDetails} setModalDetails={setModalDetails} />}
+          {modalDetails?.open && <ApproveTranfer i18n={i18n} modalDetails={modalDetails} setModalDetails={setModalDetails} />}
         </>
       )}
     </div>

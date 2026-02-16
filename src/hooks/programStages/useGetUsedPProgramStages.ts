@@ -5,6 +5,6 @@ const useGetUsedProgramStages = () => {
     const { performance, "final-result": finalResult, "socio-economics": socioEconomics, registration, transfer } = dataStoreData;
     const performanceProgramStages = performance?.programStages?.map((programStage: any) => programStage?.programStage) ?? [];
 
-    return performance ? [...performanceProgramStages, finalResult?.programStage, socioEconomics?.programStage, registration?.programStage, transfer?.programStage] : []
+    return transfer ? [...performanceProgramStages, finalResult?.programStage, socioEconomics?.programStage, registration?.programStage, transfer?.programStage] : []
 }
 export default useGetUsedProgramStages

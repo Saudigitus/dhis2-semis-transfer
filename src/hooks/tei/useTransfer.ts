@@ -14,8 +14,8 @@ const TRANSFERQUERY: any = {
     type: 'update',
     params: ({ program, ou, trackedEntityInstance }: any) => ({
         program,
-        ou,
-        trackedEntityInstance
+        orgUnit: ou,
+        trackedEntity: trackedEntityInstance
     })
 }
 

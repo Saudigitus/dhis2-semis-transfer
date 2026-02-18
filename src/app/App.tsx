@@ -7,19 +7,20 @@ import { useConfig } from '@dhis2/app-runtime'
 import translation from '../locales/index'
 import { D2I18n } from 'dhis2-semis-types'
 
-const Transfer = ({ i18n }: { i18n: D2I18n }) => {
-    const { baseUrl } = useConfig()
+const Transfer = ({ i18n, baseUrl }: { i18n: D2I18n; baseUrl?: string }) => {
+    const { baseUrl: localBaseUrl } = useConfig()
     const language: any = i18n == undefined ? translation : i18n
+    const useBaseUrl = baseUrl || localBaseUrl
 
     return (
         // <AppWrapper
-        //     i18n={i18n}
-        //     baseUrl={baseUrl}
+        //     i18n={language}
+        //     baseUrl={useBaseUrl}
         //     dataStoreKey="dataStore/semis/values"
         //     schoolCalendarKey='dataStore/semis/schoolCalendar'
         // >
         //     <HashRouter>
-                <Router i18n={language} />
+                <Router i18n={language} baseUrl={useBaseUrl} />
         //     </HashRouter >
         // </AppWrapper>
     )

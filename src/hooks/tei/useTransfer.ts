@@ -14,8 +14,8 @@ const TRANSFERQUERY: any = {
     type: 'update',
     params: ({ program, ou, trackedEntityInstance }: any) => ({
         program,
-        orgUnit: ou,
-        trackedEntity: trackedEntityInstance
+        ou,
+        trackedEntityInstance
     })
 }
 
@@ -25,7 +25,6 @@ export function useTransferTEI({ selectedTei, handleCloseApproval }: { selectedT
     const { dataStoreData, program: programData } = useGetSelectedKeys()
     const [loading, setloading] = useState(false)
     const [refetch, setRefetch] = useRecoilState<boolean>(TableDataRefetch)
-    const { transferConst } = useTransferConst({ dataStore: dataStoreData })
     const { uploadValues } = useUploadEvents()
     const { getEventsByEnrollment, loading: loadingEvents } = useGetEventsByEnrollment()
     const programStagesToTransfer = useGetUsedProgramStages()
@@ -63,7 +62,15 @@ export function useTransferTEI({ selectedTei, handleCloseApproval }: { selectedT
                         transferStatus,
                         dataStoreData?.transfer?.status
                     )
-                    await uploadValues({ trackedEntities: trackedEntities }, 'COMMIT', 'CREATE_AND_UPDATE').then(() => {
+
+                    await uploadValues({ trackedEntities: trackedEntities }, 'COMMIT', 'CREATE_AND_UPDATE').then((response: any) => {
+                        if (response?.stats?.ignored > 0) {
+                            show({ message: `Transfer failed: ${response?.validationReport?.errorReports?.[0]?.message}.`, type: { critical: true } })
+                        } else if (response?.stats?.ignored == 0) {
+                            show({ message: `Transfer successful.`, type: { success: true } })
+                        }
+                        
+                        setTimeout(hide, 5000);
                         setloading(false)
                         handleCloseApproval(); setRefetch(!refetch)
                     })

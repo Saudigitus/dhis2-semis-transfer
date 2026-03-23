@@ -8,7 +8,6 @@ const ORGUNIT_QUERY: any = {
             fields: [
                 "id,name"
             ],
-            paging: false
         }
     }
 }

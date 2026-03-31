@@ -26,7 +26,7 @@ export function formatEnrollmentBody(program: any, events: any[], registrationEv
                     occurredAt: registrationEvent?.occurredAt,
                     enrolledAt: registrationEvent?.occurredAt,
                     events: [
-                        ...events?.filter(x => x != undefined)?.map((event: any) => ({
+                        ...events?.filter(x => x != undefined && x?.event != transferEvent?.event)?.map((event: any) => ({
                             ...event,
                             orgUnit: newOu,
                         })),

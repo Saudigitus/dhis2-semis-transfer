@@ -69,6 +69,8 @@ export function useTransferTEI({ selectedTei, handleCloseApproval }: { selectedT
                     })
                 })
                 .catch(e => {
+                    show({ message: e.message || e, type: { critical: true } })
+                    setTimeout(hide, 5000);
                     setloading(false)
                 }).finally(() =>
                     setloading(false)

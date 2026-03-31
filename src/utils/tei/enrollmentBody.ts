@@ -26,17 +26,29 @@ export function formatEnrollmentBody(program: any, events: any[], registrationEv
                     occurredAt: registrationEvent?.occurredAt,
                     enrolledAt: registrationEvent?.occurredAt,
                     events: [
-                        ...events?.filter(x => x != undefined && x?.event != transferEvent?.event)?.map((event: any) => ({
-                            ...event,
-                            orgUnit: newOu,
-                        })),
-                        {
-                            ...transferEvent,
-                            dataValues: [
-                                ...transferEvent?.dataValues?.filter((x: any) => x?.dataElement != status),
-                                { dataElement: status, value }
-                            ]
-                        }
+                        ...Array.from(
+                            new Map(
+                                [
+                                    ...events
+                                        ?.filter((x) => x && x.event !== transferEvent?.event)
+                                        ?.map((event: any) => ({
+                                            ...event,
+                                            orgUnit: newOu,
+                                        })),
+
+                                    {
+                                        ...transferEvent,
+                                        orgUnit: newOu,
+                                        dataValues: [
+                                            ...(transferEvent?.dataValues || []).filter(
+                                                (x: any) => x?.dataElement !== status
+                                            ),
+                                            { dataElement: status, value },
+                                        ],
+                                    },
+                                ].map((item) => [item.event, item])
+                            ).values()
+                        ),
                     ]
                 }
             ]

@@ -33,8 +33,8 @@ export function useTransferTEI({ selectedTei, handleCloseApproval }: { selectedT
         setloading(true)
         const events = await getEventsByEnrollment(selectedTei?.enrollmentId, selectedTei?.trackedEntity, programStagesToTransfer)
         const registrationEvent: any = events?.filter((x: any) => x?.programStage == dataStoreData.registration.programStage)[0] ?? {}
-        const index: any = events?.findIndex((x: any) => x?.programStage == dataStoreData.transfer.programStage)
-        const transferEvent: any = events?.splice(index, 1)[0]
+        const transferEvent: any = events?.filter?.((x: any) => x?.programStage == dataStoreData?.transfer?.programStage)[0]
+        const restEvents = events?.filter?.((x: any) => x?.programStage != dataStoreData?.transfer?.programStage) || []
 
         if (Object.keys(registrationEvent).length === 0) {
             show({ message: `Registration event is missing in this enrollment.`, type: { critical: true } })
@@ -54,7 +54,7 @@ export function useTransferTEI({ selectedTei, handleCloseApproval }: { selectedT
                     const transferStatus = dataStoreData.transfer?.statusOptions?.find((x: any) => x.configKey === "approvedCode")?.code
 
                     const trackedEntities = formatEnrollmentBody(programData,
-                        events!,
+                        restEvents!,
                         registrationEvent,
                         ou,
                         transferEvent,
@@ -69,7 +69,7 @@ export function useTransferTEI({ selectedTei, handleCloseApproval }: { selectedT
                         } else if (response?.stats?.ignored == 0) {
                             show({ message: `Transfer successful.`, type: { success: true } })
                         }
-                        
+
                         setTimeout(hide, 5000);
                         setloading(false)
                         handleCloseApproval(); setRefetch(!refetch)

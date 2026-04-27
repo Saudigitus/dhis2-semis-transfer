@@ -17,9 +17,9 @@ function ApproveTranfer(props: ApproveTranferProps): React.ReactElement {
     const { loading, transferTEI, rejectTEI, loadingEvents } = useTransferTEI({ selectedTei: modalDetails.row, handleCloseApproval: () => setModalDetails({ open: false }) });
 
     const actions = [
-        { id: "cancel", name: i18n.t("Cancel"), disabled: false, onClick: () => setModalDetails({ open: false }) },
+        { id: "cancel", "data-test": "cancel-transfer-button", name: i18n.t("Cancel"), disabled: false, onClick: () => setModalDetails({ open: false }) },
         {
-            id: "confirm", name: i18n.t("Confirm"), primary: true, loading: !!(loadingEvents || loading), disabled: !!(loadingEvents || loading), onClick: () => {
+            id: "confirm", "data-test": "confirm-transfer-button", name: i18n.t("Confirm"), primary: true, loading: !!(loadingEvents || loading), disabled: !!(loadingEvents || loading), onClick: () => {
                 if (modalDetails?.approved) {
                     transferTEI(school)
                 } else {
@@ -31,6 +31,7 @@ function ApproveTranfer(props: ApproveTranferProps): React.ReactElement {
 
     return (
         <ModalComponent
+        dataTest="modal-tranfer"
             children={
                 <WithPadding p="10px 0px">
                     {modalDetails?.approved

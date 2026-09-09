@@ -59,7 +59,7 @@ const Transfer = ({ i18n }: { i18n: D2I18n }) => {
             title={i18n.t("Transfers")}
             programConfig={programData!}
             viewPortWidth={viewPortWidth}
-            columns={[...(columns || []), { ...columns?.[0], displayName: i18n.t("Resquest time"), id: "requestTime" }]}
+            columns={[...(columns || []), { ...columns?.[0], displayName: i18n.t("Request time"), id: "requestTime" }]}
             tableData={data}
             defaultFilterNumber={3}
             filterState={filterState}
@@ -67,7 +67,7 @@ const Transfer = ({ i18n }: { i18n: D2I18n }) => {
             setFilterState={setFilterState}
             pagination={pagination}
             setPagination={setPagination}
-            rightElements={<EnrollmentActionsButtons  i18n={i18n} />}
+            rightElements={<EnrollmentActionsButtons i18n={i18n} />}
           />
           {modalDetails?.open && <ApproveTranfer i18n={i18n} modalDetails={modalDetails} setModalDetails={setModalDetails} />}
         </>

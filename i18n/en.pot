@@ -62,5 +62,5 @@ msgstr "Use global filters(Class, Grade and Academic Year)"
 msgid "Transfers"
 msgstr "Transfers"
 
-msgid "Resquest time"
-msgstr "Resquest time"
+msgid "Request time"
+msgstr "Request time"

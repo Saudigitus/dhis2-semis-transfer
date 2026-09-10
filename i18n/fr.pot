@@ -64,7 +64,7 @@ msgstr "Utilisez les filtres globaux (Classe, Niveau et Année académique)"
 msgid "Transfers"
 msgstr "Transferts"
 
-msgid "Resquest time"
+msgid "Request time"
 msgstr "Heure de la demande"
 
 msgid "student"

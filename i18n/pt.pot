@@ -64,7 +64,7 @@ msgstr "Use os filtros globais (Turma, Classe e Ano Letivo)"
 msgid "Transfers"
 msgstr "Transferências"
 
-msgid "Resquest time"
+msgid "Request time"
 msgstr "Hora da solicitação"
 
 msgid "student"

@@ -61,7 +61,6 @@ const Transfer = ({ i18n }: { i18n: D2I18n }) => {
             viewPortWidth={viewPortWidth}
             columns={[...(columns || []), { ...columns?.[0], displayName: i18n.t("Request time"), id: "requestTime" }]}
             tableData={data}
-            defaultFilterNumber={3}
             filterState={filterState}
             loading={loading || loadingOU}
             setFilterState={setFilterState}

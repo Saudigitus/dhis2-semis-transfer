@@ -8,30 +8,29 @@ export function useGetEventsByEnrollment() {
     const { dataStoreData } = useGetSelectedKeys();
 
     const getEventsByEnrollment = async (enrollment: string, trackedEntity: string, programStagesToTransfer: string[]) => {
-        if (!dataStoreData?.program) return;
+        if (!dataStoreData?.program) return [];
 
         try {
             setLoading(true);
 
-            const eventPromises = programStagesToTransfer?.map(stage =>
-                getEvents({ program: dataStoreData?.program, programStage: stage, trackedEntities: trackedEntity, fields: "*" })
-                    .then((response: any) => {
-                        const event = response?.filter(
-                            (instance: any) => instance.enrollment === enrollment
-                        );
-                        return event[0] || null;
-                    })
-                    .catch(() => null)
+            const stages = programStagesToTransfer?.filter(Boolean) ?? [];
+
+            const responses = await Promise.all(
+                stages.map(stage =>
+                    getEvents({ program: dataStoreData?.program, programStage: stage, trackedEntities: trackedEntity, fields: "*" })
+                        .catch(() => null)
+                )
             );
 
-            const events = await Promise.all(eventPromises)
-            return events
+            return responses
+                .flatMap((response: any) => response ?? [])
+                .filter((instance: any) => instance?.enrollment === enrollment);
         } catch (error) {
-
+            return [];
         } finally {
             setLoading(false);
         }
-    }
+    };
 
     return { getEventsByEnrollment, loading };
 }

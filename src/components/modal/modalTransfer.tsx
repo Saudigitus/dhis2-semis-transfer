@@ -23,7 +23,7 @@ function ApproveTranfer(props: ApproveTranferProps): React.ReactElement {
                 if (modalDetails?.approved) {
                     transferTEI(school)
                 } else {
-                    rejectTEI()
+                    rejectTEI(school)
                 }
             }
         },

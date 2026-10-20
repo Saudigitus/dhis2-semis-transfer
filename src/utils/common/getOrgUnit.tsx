@@ -27,7 +27,7 @@ function OuNameContainer({ dataStoreData, setData, setModalDetails }: { setModal
 
         for (const data of tableData) {
             if (data[destinySchool]) allOuIds.add(data[destinySchool]);
-            if (data['ownershipOu']) allOuIds.add(data['ownershipOu']);
+            if (data['registrationEventOrgUnit']) allOuIds.add(data['registrationEventOrgUnit']);
         }
 
         // Fetch OU names only for unknown IDs
@@ -45,12 +45,17 @@ function OuNameContainer({ dataStoreData, setData, setModalDetails }: { setModal
 
             for (const data of tableData) {
                 data[destinySchool] = idHolder[data[destinySchool]] || data[destinySchool];
-                data[originSchool] = idHolder[data['ownershipOu']] || data['ownershipOu'];
+                // The request origin is the org unit where the transfer request event was created.
+                // The "Origin School" data element of the request cannot be used: it is optional and
+                // requests created in the mobile app leave it empty.
+                data[originSchool] = idHolder[data['registrationEventOrgUnit']] || data['registrationEventOrgUnit'];
 
                 const configKey = (dataStoreData?.transfer?.statusOptions as unknown as any)?.find((x: any) => x.code == data[dataStoreData.transfer.status])
 
                 if (configKey?.configKey === transferConst({ status: "penddingCode" })) {
-                    data['requestTime'] = getFormattedTimeDifference(data.registrationEventOccurredAt);
+                    // Measure the elapsed time from the moment the request was created (createdAt),
+                    // not from the request date (occurredAt), which has no time of day.
+                    data['requestTime'] = getFormattedTimeDifference(data.registrationEventCreatedAt);
                 } else {
                     data['requestTime'] = '--';
                 }

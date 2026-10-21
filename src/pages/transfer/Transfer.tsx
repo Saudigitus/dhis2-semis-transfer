@@ -21,7 +21,7 @@ const Transfer = ({ i18n }: { i18n: D2I18n }) => {
   const { getData, loading } = useTableData({ module: Modules.Transfer });
   const { school, schoolName, position, sectionType, academicYear } = urlParameters;
   const [pagination, setPagination] = useState({ page: 1, pageSize: 50, totalPages: 0, totalElements: 0 });
-  const { getOuDisplayName, loaading: loadingOU } = OuNameContainer({ dataStoreData, setData, setModalDetails });
+  const { getOuDisplayName, loaading: loadingOU } = OuNameContainer({ dataStoreData, setData, setModalDetails, i18n });
   const { columns } = useHeader({ dataStoreData, programConfigData: programData as unknown as ProgramConfig, programStage: dataStoreData?.transfer?.programStage });
   const [filterState, setFilterState] = useState<{ dataElements: any; attributes: any; }>({ attributes: [], dataElements: [] });
 

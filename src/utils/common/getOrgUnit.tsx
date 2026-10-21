@@ -1,19 +1,21 @@
 import React from 'react'
+import { useTimeZoneConversion } from '@dhis2/app-runtime';
 import { useGetOusData } from '../../hooks/orgUnits/useGetOrgUnits';
-import { DataStoreProps } from 'dhis2-semis-types';
+import { D2I18n, DataStoreProps } from 'dhis2-semis-types';
 import { useUrlParams } from 'dhis2-semis-functions';
 import { useGetComponent } from './getComponent';
 import { getFormattedTimeDifference } from './getDiff';
 import { useTransferConst } from '../../hooks/transferOptions/statusOptions';
 import { TabPosistion } from '../../types/tabs/TabsTypes';
 
-function OuNameContainer({ dataStoreData, setData, setModalDetails }: { setModalDetails: any, setData: (args: any) => any, dataStoreData: DataStoreProps[0] }) {
+function OuNameContainer({ dataStoreData, setData, setModalDetails, i18n }: { setModalDetails: any, setData: (args: any) => any, dataStoreData: DataStoreProps[0], i18n: D2I18n }) {
     const { getOuName } = useGetOusData()
     const [loaading, setLoading] = React.useState(true)
     const { urlParameters } = useUrlParams()
     const { position } = urlParameters
     const { getComponent } = useGetComponent({ setModalDetails, dataStore: dataStoreData })
     const { transferConst } = useTransferConst({ dataStore: dataStoreData })
+    const { fromServerDate } = useTimeZoneConversion()
 
     async function getOuDisplayName(tableData: any[]) {
         setLoading(true);
@@ -55,7 +57,8 @@ function OuNameContainer({ dataStoreData, setData, setModalDetails }: { setModal
                 if (configKey?.configKey === transferConst({ status: "penddingCode" })) {
                     // Measure the elapsed time from the moment the request was created (createdAt),
                     // not from the request date (occurredAt), which has no time of day.
-                    data['requestTime'] = getFormattedTimeDifference(data.registrationEventCreatedAt);
+                    // createdAt is in the server time zone, so convert it to the browser time first.
+                    data['requestTime'] = getFormattedTimeDifference(fromServerDate(data.registrationEventCreatedAt).toISOString(), i18n);
                 } else {
                     data['requestTime'] = '--';
                 }

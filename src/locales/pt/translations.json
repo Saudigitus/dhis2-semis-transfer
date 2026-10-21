@@ -19,5 +19,11 @@
     "Transfers": "Transferências",
     "Request time": "Hora da solicitação",
     "student": "estudante",
-    "staff": "funcionário"
+    "staff": "funcionário",
+    "Just now": "Agora mesmo",
+    "{{time}} ago": "há {{time}}",
+    "1 day": "1 dia",
+    "{{days}} days": "{{days}} dias",
+    "1 month": "1 mês",
+    "{{months}} months": "{{months}} meses"
 }

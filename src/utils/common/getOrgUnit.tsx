@@ -1,19 +1,21 @@
 import React from 'react'
+import { useTimeZoneConversion } from '@dhis2/app-runtime';
 import { useGetOusData } from '../../hooks/orgUnits/useGetOrgUnits';
-import { DataStoreProps } from 'dhis2-semis-types';
+import { D2I18n, DataStoreProps } from 'dhis2-semis-types';
 import { useUrlParams } from 'dhis2-semis-functions';
 import { useGetComponent } from './getComponent';
 import { getFormattedTimeDifference } from './getDiff';
 import { useTransferConst } from '../../hooks/transferOptions/statusOptions';
 import { TabPosistion } from '../../types/tabs/TabsTypes';
 
-function OuNameContainer({ dataStoreData, setData, setModalDetails }: { setModalDetails: any, setData: (args: any) => any, dataStoreData: DataStoreProps[0] }) {
+function OuNameContainer({ dataStoreData, setData, setModalDetails, i18n }: { setModalDetails: any, setData: (args: any) => any, dataStoreData: DataStoreProps[0], i18n: D2I18n }) {
     const { getOuName } = useGetOusData()
     const [loaading, setLoading] = React.useState(true)
     const { urlParameters } = useUrlParams()
     const { position } = urlParameters
     const { getComponent } = useGetComponent({ setModalDetails, dataStore: dataStoreData })
     const { transferConst } = useTransferConst({ dataStore: dataStoreData })
+    const { fromServerDate } = useTimeZoneConversion()
 
     async function getOuDisplayName(tableData: any[]) {
         setLoading(true);
@@ -27,7 +29,7 @@ function OuNameContainer({ dataStoreData, setData, setModalDetails }: { setModal
 
         for (const data of tableData) {
             if (data[destinySchool]) allOuIds.add(data[destinySchool]);
-            if (data['ownershipOu']) allOuIds.add(data['ownershipOu']);
+            if (data['registrationEventOrgUnit']) allOuIds.add(data['registrationEventOrgUnit']);
         }
 
         // Fetch OU names only for unknown IDs
@@ -45,12 +47,18 @@ function OuNameContainer({ dataStoreData, setData, setModalDetails }: { setModal
 
             for (const data of tableData) {
                 data[destinySchool] = idHolder[data[destinySchool]] || data[destinySchool];
-                data[originSchool] = idHolder[data['ownershipOu']] || data['ownershipOu'];
+                // The request origin is the org unit where the transfer request event was created.
+                // The "Origin School" data element of the request cannot be used: it is optional and
+                // requests created in the mobile app leave it empty.
+                data[originSchool] = idHolder[data['registrationEventOrgUnit']] || data['registrationEventOrgUnit'];
 
                 const configKey = (dataStoreData?.transfer?.statusOptions as unknown as any)?.find((x: any) => x.code == data[dataStoreData.transfer.status])
 
                 if (configKey?.configKey === transferConst({ status: "penddingCode" })) {
-                    data['requestTime'] = getFormattedTimeDifference(data.registrationEventOccurredAt);
+                    // Measure the elapsed time from the moment the request was created (createdAt),
+                    // not from the request date (occurredAt), which has no time of day.
+                    // createdAt is in the server time zone, so convert it to the browser time first.
+                    data['requestTime'] = getFormattedTimeDifference(fromServerDate(data.registrationEventCreatedAt).toISOString(), i18n);
                 } else {
                     data['requestTime'] = '--';
                 }

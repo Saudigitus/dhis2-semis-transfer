@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useRecoilState } from 'recoil'
-import { useDataEngine } from '@dhis2/app-runtime'
+import { useConfig, useDataEngine } from '@dhis2/app-runtime'
 import { useGetEventsByEnrollment } from '../events/useGetEventsByEnrollment'
 import { TableDataRefetch } from 'dhis2-semis-types'
 import { useTransferConst } from '../transferOptions/statusOptions'
@@ -9,18 +9,21 @@ import { formatEnrollmentBody } from '../../utils/tei/enrollmentBody'
 import useGetUsedProgramStages from '../programStages/useGetUsedPProgramStages'
 import useGetSelectedKeys from '../config/useGetSelectedKeys'
 
+// The parameter names follow the DHIS2 version: `trackedEntity` from 2.41 (2.42 refuses
+// `trackedEntityInstance`) and `orgUnit` from 2.43 (2.43 refuses `ou`), both with 400.
 const TRANSFERQUERY: any = {
     resource: 'tracker/ownership/transfer',
     type: 'update',
-    params: ({ program, ou, trackedEntityInstance }: any) => ({
+    params: ({ program, ou, trackedEntity, apiVersion }: any) => ({
         program,
-        ou,
-        trackedEntityInstance
+        ...(apiVersion >= 43 ? { orgUnit: ou } : { ou }),
+        ...(apiVersion >= 41 ? { trackedEntity } : { trackedEntityInstance: trackedEntity })
     })
 }
 
 export function useTransferTEI({ selectedTei, handleCloseApproval }: { selectedTei: any, handleCloseApproval: () => void }) {
     const engine = useDataEngine()
+    const { apiVersion } = useConfig()
     const { show, hide } = useShowAlerts()
     const { dataStoreData, program: programData } = useGetSelectedKeys()
     const [loading, setloading] = useState(false)
@@ -77,7 +80,8 @@ export function useTransferTEI({ selectedTei, handleCloseApproval }: { selectedT
                 variables: {
                     program: selectedTei?.programId,
                     ou,
-                    trackedEntityInstance: selectedTei?.trackedEntity
+                    trackedEntity: selectedTei?.trackedEntity,
+                    apiVersion
                 }
             })
                 .then(async () => {
@@ -105,8 +109,9 @@ export function useTransferTEI({ selectedTei, handleCloseApproval }: { selectedT
                         handleCloseApproval(); setRefetch(!refetch)
                     })
                 })
-                .catch(e => {
-                    setloading(false)
+                .catch((e: any) => {
+                    // Show why the ownership change was refused instead of leaving the dialog loading.
+                    notifyAndClose(`Transfer failed: ${e?.details?.message ?? e?.message ?? ''}`)
                 }).finally(() =>
                     setloading(false)
                 )

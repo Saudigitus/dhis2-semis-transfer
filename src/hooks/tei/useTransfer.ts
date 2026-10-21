@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useRecoilState } from 'recoil'
-import { useDataEngine } from '@dhis2/app-runtime'
+import { useConfig, useDataEngine } from '@dhis2/app-runtime'
 import { useGetEventsByEnrollment } from '../events/useGetEventsByEnrollment'
 import { TableDataRefetch } from 'dhis2-semis-types'
 import { useTransferConst } from '../transferOptions/statusOptions'
@@ -9,18 +9,21 @@ import { formatEnrollmentBody } from '../../utils/tei/enrollmentBody'
 import useGetUsedProgramStages from '../programStages/useGetUsedPProgramStages'
 import useGetSelectedKeys from '../config/useGetSelectedKeys'
 
+// The parameter names follow the DHIS2 version: `trackedEntity` from 2.41 (2.42 refuses
+// `trackedEntityInstance`) and `orgUnit` from 2.43 (2.43 refuses `ou`), both with 400.
 const TRANSFERQUERY: any = {
     resource: 'tracker/ownership/transfer',
     type: 'update',
-    params: ({ program, ou, trackedEntityInstance }: any) => ({
+    params: ({ program, ou, trackedEntity, apiVersion }: any) => ({
         program,
-        ou,
-        trackedEntityInstance
+        ...(apiVersion >= 43 ? { orgUnit: ou } : { ou }),
+        ...(apiVersion >= 41 ? { trackedEntity } : { trackedEntityInstance: trackedEntity })
     })
 }
 
 export function useTransferTEI({ selectedTei, handleCloseApproval }: { selectedTei: any, handleCloseApproval: () => void }) {
     const engine = useDataEngine()
+    const { apiVersion } = useConfig()
     const { show, hide } = useShowAlerts()
     const { dataStoreData, program: programData } = useGetSelectedKeys()
     const [loading, setloading] = useState(false)
@@ -29,17 +32,47 @@ export function useTransferTEI({ selectedTei, handleCloseApproval }: { selectedT
     const { getEventsByEnrollment, loading: loadingEvents } = useGetEventsByEnrollment()
     const programStagesToTransfer = useGetUsedProgramStages()
 
+    // The transfer table is built from the transfer program stage, so the clicked row's
+    // `registrationEvent` holds the uid of the transfer request that must be changed.
+    const clickedTransferEventId = selectedTei?.registrationEvent
+
+    const getTransferValue = (event: any, dataElement?: string) =>
+        event?.dataValues?.find((dataValue: any) => dataValue?.dataElement === dataElement)?.value
+
+    const getClickedTransferEvent = (events: any[]) =>
+        events?.find((event: any) =>
+            event?.programStage == dataStoreData?.transfer?.programStage && event?.event === clickedTransferEventId
+        )
+
+    const canApplyTransferDecision = (transferEvent: any, targetSchool: any) => {
+        const pendingCode = dataStoreData?.transfer?.statusOptions?.find((x: any) => x.configKey === "penddingCode")?.code
+
+        if (!transferEvent) return false
+        if (getTransferValue(transferEvent, dataStoreData?.transfer?.status) !== pendingCode) return false
+        if (targetSchool && getTransferValue(transferEvent, dataStoreData?.transfer?.destinySchool) !== targetSchool) return false
+        return true
+    }
+
+    const notifyAndClose = (message: string) => {
+        show({ message, type: { critical: true } })
+        setTimeout(hide, 5000);
+        setloading(false)
+        handleCloseApproval()
+    }
+
     const transferTEI = async (ou: any) => {
         setloading(true)
         const events = await getEventsByEnrollment(selectedTei?.enrollmentId, selectedTei?.trackedEntity, programStagesToTransfer)
-        const registrationEvent: any = events?.filter((x: any) => x?.programStage == dataStoreData.registration.programStage)[0] ?? {}
-        const transferEvent: any = events?.filter?.((x: any) => x?.programStage == dataStoreData?.transfer?.programStage)[0]
-        const restEvents = events?.filter?.((x: any) => x?.programStage != dataStoreData?.transfer?.programStage) || []
+        const registrationEvent: any = events?.find((x: any) => x?.programStage == dataStoreData.registration.programStage) ?? {}
+        const transferEvent: any = getClickedTransferEvent(events)
+        const restEvents = events?.filter((x: any) => x?.programStage != dataStoreData?.transfer?.programStage) || []
 
         if (Object.keys(registrationEvent).length === 0) {
-            show({ message: `Registration event is missing in this enrollment.`, type: { critical: true } })
-            setTimeout(hide, 5000);
-            handleCloseApproval();
+            notifyAndClose(`Registration event is missing in this enrollment.`)
+        }
+
+        else if (!canApplyTransferDecision(transferEvent, ou)) {
+            notifyAndClose(`This transfer request is no longer pending or does not belong to the selected school.`)
         }
 
         else {
@@ -47,7 +80,8 @@ export function useTransferTEI({ selectedTei, handleCloseApproval }: { selectedT
                 variables: {
                     program: selectedTei?.programId,
                     ou,
-                    trackedEntityInstance: selectedTei?.trackedEntity
+                    trackedEntity: selectedTei?.trackedEntity,
+                    apiVersion
                 }
             })
                 .then(async () => {
@@ -75,22 +109,30 @@ export function useTransferTEI({ selectedTei, handleCloseApproval }: { selectedT
                         handleCloseApproval(); setRefetch(!refetch)
                     })
                 })
-                .catch(e => {
-                    setloading(false)
+                .catch((e: any) => {
+                    // Show why the ownership change was refused instead of leaving the dialog loading.
+                    notifyAndClose(`Transfer failed: ${e?.details?.message ?? e?.message ?? ''}`)
                 }).finally(() =>
                     setloading(false)
                 )
         }
     }
 
-    const rejectTEI = async () => {
+    const rejectTEI = async (targetSchool: any) => {
         setloading(true)
         const events = await getEventsByEnrollment(selectedTei?.enrollmentId, selectedTei?.trackedEntity, [dataStoreData.transfer.programStage])
+        const transferEvent: any = getClickedTransferEvent(events)
+
+        if (!canApplyTransferDecision(transferEvent, targetSchool)) {
+            notifyAndClose(`This transfer request is no longer pending or does not belong to the selected school.`)
+            return
+        }
+
         const transferStatus = dataStoreData?.transfer?.statusOptions?.find((x: any) => x.configKey === "reprovedCode")?.code
 
         const updatedEvent = [{
-            ...events?.[0],
-            dataValues: [...events?.[0]?.dataValues?.filter((x: any) => x?.dataElement != dataStoreData?.transfer?.status),
+            ...transferEvent,
+            dataValues: [...transferEvent?.dataValues?.filter((x: any) => x?.dataElement != dataStoreData?.transfer?.status),
             {
                 dataElement: dataStoreData?.transfer?.status,
                 value: transferStatus

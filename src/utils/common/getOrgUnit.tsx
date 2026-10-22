@@ -8,6 +8,9 @@ import { getFormattedTimeDifference } from './getDiff';
 import { useTransferConst } from '../../hooks/transferOptions/statusOptions';
 import { TabPosistion } from '../../types/tabs/TabsTypes';
 
+// Key of the origin school name in each row: the org unit of the request event.
+export const ORIGIN_SCHOOL_KEY = 'originSchool'
+
 function OuNameContainer({ dataStoreData, setData, setModalDetails, i18n }: { setModalDetails: any, setData: (args: any) => any, dataStoreData: DataStoreProps[0], i18n: D2I18n }) {
     const { getOuName } = useGetOusData()
     const [loaading, setLoading] = React.useState(true)
@@ -22,7 +25,6 @@ function OuNameContainer({ dataStoreData, setData, setModalDetails, i18n }: { se
 
         const idHolder: Record<string, string> = {};
         const destinySchool = dataStoreData.transfer.destinySchool;
-        const originSchool = dataStoreData.transfer.originSchool;
 
         // Collect all unique OU IDs to fetch at once
         const allOuIds = new Set<string>();
@@ -47,10 +49,8 @@ function OuNameContainer({ dataStoreData, setData, setModalDetails, i18n }: { se
 
             for (const data of tableData) {
                 data[destinySchool] = idHolder[data[destinySchool]] || data[destinySchool];
-                // The request origin is the org unit where the transfer request event was created.
-                // The "Origin School" data element of the request cannot be used: it is optional and
-                // requests created in the mobile app leave it empty.
-                data[originSchool] = idHolder[data['registrationEventOrgUnit']] || data['registrationEventOrgUnit'];
+                // The origin school is always the org unit where the transfer request event was created.
+                data[ORIGIN_SCHOOL_KEY] = idHolder[data['registrationEventOrgUnit']] || data['registrationEventOrgUnit'];
 
                 const configKey = (dataStoreData?.transfer?.statusOptions as unknown as any)?.find((x: any) => x.code == data[dataStoreData.transfer.status])
 

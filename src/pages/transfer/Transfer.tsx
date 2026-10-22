@@ -6,7 +6,7 @@ import { Table } from "dhis2-semis-components";
 import EnrollmentActionsButtons from "../../components/enrollmentButtons/EnrollmentActionsButtons";
 import { useHeader, useTableData, useUrlParams, useViewPortWidth } from "dhis2-semis-functions";
 import InfoPageComp from "../info/info";
-import OuNameContainer from "../../utils/common/getOrgUnit";
+import OuNameContainer, { ORIGIN_SCHOOL_KEY } from "../../utils/common/getOrgUnit";
 import ApproveTranfer from "../../components/modal/modalTransfer";
 import useGetSelectedKeys from "../../hooks/config/useGetSelectedKeys";
 import { TabPosistion } from "../../types/tabs/TabsTypes";
@@ -59,7 +59,14 @@ const Transfer = ({ i18n }: { i18n: D2I18n }) => {
             title={i18n.t("Transfers")}
             programConfig={programData!}
             viewPortWidth={viewPortWidth}
-            columns={[...(columns || []), { ...columns?.[0], displayName: i18n.t("Request time"), id: "requestTime" }]}
+            columns={[
+              ...(columns || []).filter((column: any) => column?.id !== dataStoreData?.transfer?.status),
+              // The origin school is the org unit of the request event.
+              { ...columns?.[0], displayName: i18n.t("Origin School"), id: ORIGIN_SCHOOL_KEY, visible: true },
+              { ...columns?.[0], displayName: i18n.t("Request time"), id: "requestTime", visible: true },
+              // The status (with the approve and reject actions) is the last column.
+              ...(columns || []).filter((column: any) => column?.id === dataStoreData?.transfer?.status)
+            ]}
             tableData={data}
             filterState={filterState}
             loading={loading || loadingOU}

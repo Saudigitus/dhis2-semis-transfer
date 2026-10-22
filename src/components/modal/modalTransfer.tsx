@@ -5,6 +5,7 @@ import { ApproveTranferProps } from "../../types/modal/ModalProps";
 import { useGetSectionTypeLabel, useUrlParams } from "dhis2-semis-functions";
 import { useTransferTEI } from "../../hooks/tei/useTransfer";
 import useGetSelectedKeys from "../../hooks/config/useGetSelectedKeys";
+import { ORIGIN_SCHOOL_KEY } from "../../utils/common/getOrgUnit";
 
 function ApproveTranfer(props: ApproveTranferProps): React.ReactElement {
     const { modalDetails, setModalDetails, i18n } = props;
@@ -61,12 +62,12 @@ function ApproveTranfer(props: ApproveTranferProps): React.ReactElement {
                     {modalDetails?.approved
                         ? <div className="py-2">
                             {i18n.t("Are you sure you want to approve the transfer of ")} <strong>{modalDetails?.row?.[trackedEntityAttributes[1]?.trackedEntityAttribute.id ?? programTrackedEntityAttributes[2]?.trackedEntityAttribute.id]} {modalDetails?.row?.[trackedEntityAttributes[0]?.trackedEntityAttribute?.id ?? programTrackedEntityAttributes[3]?.trackedEntityAttribute.id]} </strong>{" "} {i18n.t("from")}{" "}
-                            <strong>{modalDetails?.row?.[dataStoreData?.transfer?.originSchool]}</strong>{" "} {i18n.t("to")} {" "}
+                            <strong>{modalDetails?.row?.[ORIGIN_SCHOOL_KEY]}</strong>{" "} {i18n.t("to")} {" "}
                             <strong>{schoolName}</strong>?
                         </div>
                         : <div className="py-2">
                             {i18n.t("Are you sure you want to reject the transfer of")}  <strong>{modalDetails?.row?.[trackedEntityAttributes[1]?.trackedEntityAttribute.id ?? programTrackedEntityAttributes[2]?.trackedEntityAttribute.id]} {modalDetails?.row?.[trackedEntityAttributes[0]?.trackedEntityAttribute?.id ?? programTrackedEntityAttributes[3]?.trackedEntityAttribute.id]}</strong>{" "} {i18n.t("from")}{" "}
-                            <strong>{modalDetails?.row?.[dataStoreData?.transfer?.originSchool]}</strong>{" "} {i18n.t("to")} {" "}
+                            <strong>{modalDetails?.row?.[ORIGIN_SCHOOL_KEY]}</strong>{" "} {i18n.t("to")} {" "}
                             <strong>{schoolName}</strong>
                         </div>
                     }

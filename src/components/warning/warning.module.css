@@ -1,0 +1,44 @@
+.attendanceStats {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: 15px;
+}
+
+.warningMessage {
+    width: 100%;
+    min-height: 40px;
+    max-height: 50px;
+    padding: 3px 12px;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    background: #fff8e1;
+    border: 1px solid #ffd966;
+    border-radius: 6px;
+
+    color: #6b5500;
+    font-size: 13px;
+    line-height: 1.4;
+
+    overflow: hidden;
+}
+
+.warningIcon {
+    font-size: 18px;
+    color: #e8a100;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.warningText {
+    flex: 1;
+    font-weight: 500;
+    color: #6b4800;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+

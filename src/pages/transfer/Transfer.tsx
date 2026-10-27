@@ -38,7 +38,12 @@ const Transfer = ({ i18n }: { i18n: D2I18n }) => {
         attributeFilters: filterState.attributes,
         otherProgramStage: dataStoreData?.transfer?.programStage,
         baseProgramStage: dataStoreData?.registration?.programStage as string,
-        orgUnit: position === TabPosistion.OUTGOING ? school : null as unknown as string,
+        // Incoming: requests whose destination school is the selected school.
+        // Outgoing: requests registered at the selected school. The server's orgUnit filter follows the
+        // learner's owner, which becomes the destination after the approval, so the requests are read for
+        // every accessible school and kept by the org unit of the request event.
+        orgUnit: null as unknown as string,
+        ...(position === TabPosistion.OUTGOING ? { eventOrgUnit: school } : {}),
         dataElementFilters: position === TabPosistion.INCOMING ?
           [`${dataStoreData?.transfer?.destinySchool as unknown as string}:in:${school}`]
           : filterState.dataElements,
